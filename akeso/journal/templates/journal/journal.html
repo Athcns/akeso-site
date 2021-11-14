@@ -1,0 +1,16 @@
+{% extends 'journal/layout.html' %}
+
+{% body block %}
+    <h1>Journals</h1>
+    <div>User: {{ request.user.username }}</div>
+    <p>This is the directory for all the journals you have written!</p>
+
+    <ul>
+        {% for entries in journals %}
+            <li>
+                <a href="{% url 'read' entries.id %}">
+                    Entry {{ entries.id }}: {{ entries.header }}
+                </a>
+            </li>
+    </ul>
+{% endblock %}
