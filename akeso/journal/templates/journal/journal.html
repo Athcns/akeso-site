@@ -7,12 +7,18 @@
 
     <a href="{% url 'create' %}">Create a new Entry</a>
 
+    <form action="{% url 'createJournal' %}" method="POST">
+        <input type="text" name="journal-name" placeholder="Journal Name">
+        <input type="submit" value="Create">
+    </form>
+
     <ul>
         {% for entries in journals %}
             <li>
-                <a href="{% url 'read' entries.id %}">
+                <!---<a href=" }">
                     Entry {{ entries.id }}: {{ entries.header }}
-                </a>
+                </a> --->
+                Entry {{ entries.id }}: {{ entries.header }}
             </li>
         {% endfor %}
     </ul>

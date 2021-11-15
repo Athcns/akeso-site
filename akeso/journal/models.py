@@ -4,7 +4,9 @@ from django.conf import settings
 # Create your models here.
 class Journal(models.Model):
     # Assigns each account user's primary key to a journal table
-    writer = models.ManyToManyField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    writer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return f"{self.id}"
@@ -21,3 +23,6 @@ class Entry(models.Model):
     header = models.CharField(max_length=100)
     # Entry Details
     content = models.TextField()
+
+    def __str__(self):
+        return f"{self.header}"
