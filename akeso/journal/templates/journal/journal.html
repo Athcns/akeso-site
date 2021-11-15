@@ -1,9 +1,11 @@
 {% extends 'journal/layout.html' %}
 
-{% body block %}
+{% block body %}
     <h1>Journals</h1>
     <div>User: {{ request.user.username }}</div>
     <p>This is the directory for all the journals you have written!</p>
+
+    <a href="{% url 'create' %}">Create a new Entry</a>
 
     <ul>
         {% for entries in journals %}
@@ -12,5 +14,6 @@
                     Entry {{ entries.id }}: {{ entries.header }}
                 </a>
             </li>
+        {% endfor %}
     </ul>
 {% endblock %}
