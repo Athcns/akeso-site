@@ -5,19 +5,21 @@
     <div>User: {{ request.user.username }}</div>
     <p>This is the directory for all the journals you have written!</p>
 
-    <a href="{% url 'create' %}">Create a new Entry</a>
-
     <form action="{% url 'createJournal' %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="journal-name" placeholder="Journal Name">
+        <input type="text" name="journalName" placeholder="Journal Name">
         <input type="submit" value="Create">
     </form>
 
     <ul>
         {% for journal in journals %}
             <li>
-                Journal {{ journal.id }}: {{ journal.name }}
+                <a href="{% url 'viewJournal' journalID=journal.id %}">
+                    Journal {{ journal.id }}: {{ journal.name }}
+                </a>
             </li>
         {% endfor %}
     </ul>
+
+    <a href="{% url 'logout' %}">Log Out</a>
 {% endblock %}
