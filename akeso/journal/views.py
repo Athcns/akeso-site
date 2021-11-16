@@ -4,13 +4,16 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 
 from .models import Journal, Entry
+from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
-        library = Journal.objects.all()
+        user = User.objects.get(id=request.user.id)
+        library = Journal.objects.filter(writer=user)
+
         return render(request, "journal/journal.html", {
             "user_id": request.user.id,
             "journals": library
@@ -39,9 +42,9 @@ def create_journal(request):
     else:
         if request.method == "POST":
             name = request.POST['journal-name']
-            writer = user_id
+            user = User.objects.get(id=request.user.id)
 
-            new_journal =  Journal(writer=user_id, name=name)
+            new_journal =  Journal(writer=user, name=name)
             new_journal.save()
 
             return HttpResponseRedirect(reverse("index"))
