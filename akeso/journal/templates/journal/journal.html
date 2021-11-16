@@ -1,0 +1,19 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+    <h1>{{ journal.name }}</h1>
+    <div>User: {{ request.user.username  }}</div>
+
+    <h3>Entries</h3>
+    <div>
+        {% for entry in entries %}
+            <ul>
+                Entry {{ entry.id }}: {{ entry.header }}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <br>
+    <a href="{% url 'createEntry' journalID=journal.id %}">Create a new Entry</a>
+
+{% endblock %}
