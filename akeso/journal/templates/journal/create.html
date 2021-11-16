@@ -1,0 +1,14 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+    <h1>New Entry</h1>
+    <br>
+
+    <form action="{% url 'createEntry' journalID=journal.id %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="header" placeholder="Title">
+        <input type="text" name="content" placeholder="Content">
+        <input type="submit" value="Create">
+    </form>
+
+{% endblock %}
