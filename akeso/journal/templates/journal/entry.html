@@ -1,0 +1,12 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+    <h1>{{ entry.header }}</h1>
+    <div>Created: {{ entry.creation_date }}</div>
+    <div>
+        <h3>Contents</h3>
+        <p>{{ entry.content }}</p>
+    </div>
+
+    <a href="{% url 'viewJournal' journalID=journal.id %}">Return to Journal View</a>
+{% endblock %}
