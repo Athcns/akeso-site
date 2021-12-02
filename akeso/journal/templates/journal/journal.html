@@ -8,12 +8,15 @@
     <div>
         {% for entry in entries %}
             <ul>
-                Entry {{ entry.id }}: {{ entry.header }}
+                <a href="{% url 'readEntry' entryID=entry.id journalID=journal.id %}">
+                    Entry {{ entry.id }}: {{ entry.header }}
+                </a>
             </ul>
         {% endfor %}
     </div>
 
     <br>
     <a href="{% url 'createEntry' journalID=journal.id %}">Create a new Entry</a>
-
+    <br>
+    <a href="{% url 'index' %}">Return to Library</a>
 {% endblock %}

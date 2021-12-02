@@ -78,5 +78,13 @@ def journal_view(request, journalID):
 
 
 
-def read(request, entry_id):
-    pass
+def read(request, entryID,journalID):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        entry = Entry.objects.get(id=entryID)
+        journal = Journal.objects.get(id=journalID)
+        return render(request, "journal/entry.html", {
+            "entry": entry,
+            "journal": journal
+        })

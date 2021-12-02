@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
+    {% load static %}
+    <!-- Loading in the Base Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Loading in the Base Bootstrap JS -->
+    <script src="{% static 'bootstrap.min.js' %}"></script>
 </head>
 <body>
     {% block body %}
