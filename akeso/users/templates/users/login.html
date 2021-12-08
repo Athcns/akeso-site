@@ -8,9 +8,13 @@
 
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Password">
-        <input type="submit" value="Login">
+        <div class="input-group">
+            <input type="text" name="username" placeholder="Username" class="form-control">
+        </div>
+        <div class="input-group">
+            <input type="password" name="password" placeholder="Password" class="form-control">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Login" >
     </form>
 
     <a href="{% url 'register' %}">Register</a>
