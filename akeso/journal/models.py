@@ -25,3 +25,33 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.header}"
+
+class Activity(models.Model):
+    # Connects the activity to the specific user
+    user_id = models.ForeignKey(User)
+    # Activity name (Eg. Mediation)
+    activity_name = models.CharField(max_length=64)
+    # Date of Creation
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+class Mood(models.Model):
+    # Connects the mood to the user
+    user_id = models.ForeignKey(User)
+    # Connects the mood to the Entry
+    entry_id = models.ManyToManyField(Entry)
+    # Creates a scale from 1 to 10
+    mood_scale = models.IntegerField(max_value=10, min_value=0)
+    # Done activities
+    activity = models.ForeignKey(Activity)
+    # Created date
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+class WeeklyUpdate(models.Model):
+    user_id = models.ForeignKey(User)
+    mood_id = models.ForeignKey(Mood)
+    status_id = models.ForeignKey(Status)
+
+class Status(models.Model):
+    # Connect to user model
+    user_id = models.ForeignKey(User)
+
