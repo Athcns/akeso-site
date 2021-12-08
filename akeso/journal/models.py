@@ -28,30 +28,32 @@ class Entry(models.Model):
 
 class Activity(models.Model):
     # Connects the activity to the specific user
-    user_id = models.ForeignKey(User)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # Activity name (Eg. Mediation)
     activity_name = models.CharField(max_length=64)
     # Date of Creation
     creation_date = models.DateTimeField(auto_now_add=True)
 
 class Mood(models.Model):
+    #TODO: When creating the function in views.py, make sure to add a check if the mood scale POSTed is between 1 and 10
+
     # Connects the mood to the user
-    user_id = models.ForeignKey(User)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # Connects the mood to the Entry
     entry_id = models.ManyToManyField(Entry)
     # Creates a scale from 1 to 10
-    mood_scale = models.IntegerField(max_value=10, min_value=0)
+    mood_scale = models.IntegerField(default=0)
     # Done activities
-    activity = models.ForeignKey(Activity)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     # Created date
     creation_date = models.DateTimeField(auto_now_add=True)
 
-class WeeklyUpdate(models.Model):
-    user_id = models.ForeignKey(User)
-    mood_id = models.ForeignKey(Mood)
-    status_id = models.ForeignKey(Status)
-
 class Status(models.Model):
     # Connect to user model
-    user_id = models.ForeignKey(User)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class WeeklyUpdate(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    mood_id = models.ForeignKey(Mood, on_delete=models.CASCADE)
+    status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
 
