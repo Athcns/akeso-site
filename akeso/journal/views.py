@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate
 from django.urls import reverse
 
-from .models import Journal, Entry
+from .models import Journal, Entry, Activity, Mood, Status, WeeklyUpdate
 from django.contrib.auth.models import User
 
 #TODO: Create a way to view the entries details (Their Context and Header)
@@ -76,6 +76,20 @@ def journal_view(request, journalID):
             "entries": entries
         })
 
+def mood(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        if request.method == "POST":
+            mood = request.POST['mood_scale']
+            activities = request.POST['activites']
+            if mood <= 10 and mood >= 1:
+                newMood = Mood(user_id=user, mood_scale=mood, activity=activities)
+                newMood.save()
+
+                return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("index"))
 
 
 def read(request, entryID,journalID):

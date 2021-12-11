@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("", views.mood, name="mood"),
     path("<int:journalID>/create", views.create_entry, name="createEntry"),
     path("<int:journalID>/entry/<int:entryID>", views.read, name="readEntry"),
     path("create-journal", views.create_journal, name="createJournal"),

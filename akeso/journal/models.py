@@ -40,7 +40,7 @@ class Mood(models.Model):
     # Connects the mood to the user
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # Connects the mood to the Entry
-    entry_id = models.ManyToManyField(Entry)
+    # entry_id = models.ManyToManyField(Entry)
     # Creates a scale from 1 to 10
     mood_scale = models.IntegerField(default=0)
     # Done activities
