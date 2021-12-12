@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from .models import Journal, Entry, Activity, Mood, Status, WeeklyUpdate
 from django.contrib.auth.models import User
+from datetime import datetime
 
 #TODO: Create a way to view the entries details (Their Context and Header)
 
@@ -15,11 +16,15 @@ def index(request):
     else:
         user = User.objects.get(id=request.user.id)
         library = Journal.objects.filter(writer=user)
-
+        moodStatus = Mood.objects.filter(user_id=user, creation_date=datetime.today())
+        activities = Activity.objects.filter(user_id=user)
         # TODO: Allow users to see their Journals numbered 1, 2, 3,... rather than just the
         # primary key number auto assigned to the journal on creation.
+
         return render(request, "journal/library.html", {
-            "journals": library
+            "journals": library,
+            "activities": activities,
+            "daily_mood": True
         })
 
 
@@ -83,7 +88,7 @@ def mood(request):
         user = User.objects.get(id=request.user.id)
         if request.method == "POST":
             mood = request.POST['mood_scale']
-            activities = request.POST['activites']
+            activities = request.POST['activities']
             if mood <= 10 and mood >= 1:
                 newMood = Mood(user_id=user, mood_scale=mood, activity=activities)
                 newMood.save()
@@ -91,6 +96,45 @@ def mood(request):
                 return HttpResponseRedirect(reverse("index"))
         return HttpResponseRedirect(reverse("index"))
 
+def activity_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        activities = Activity.objects.filter(user_id=user)
+
+        return render(request, "journal/activity.html", {
+            "activities": activities,
+        })
+
+def create_activity(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        if request.method == "POST":
+            user = User.objects.get(id=request.user.id)
+            activity_name = request.POST['activity']
+
+            newActivity = Activity(name=activity_name, user_id=user)
+            newActivity.save()
+
+            return HttpResponseRedirect(reverse("viewActivity"))
+
+def delete_activity(request, activityID):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        activity = Activity.objects.get(id=activityID)
+        activity_name = activity.name
+        activity.delete()
+
+        user = User.objects.get(id=request.user.id)
+        activities = Activity.objects.filter(user_id=user)
+
+        return render(request, "journal/activity", {
+            "activities": activities,
+            "message": f"{activity_name} has been deleted"
+        })
 
 def read(request, entryID,journalID):
     if not request.user.is_authenticated:
