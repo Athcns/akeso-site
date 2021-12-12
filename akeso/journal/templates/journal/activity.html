@@ -1,0 +1,25 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+
+    <h1>Activities</h1>
+    <p>This is the page for viewing your current activities and creating new ones!</p>
+
+    <br>
+    {% if message %}
+        {{message}}
+    {% endif %}
+    <br>
+    {% for activity in activities %}
+        <ul>
+            {{ activity.name }}
+            <a href="{% url 'deleteActivity' activityID=activity.id %}">Delete</a>
+        </ul>
+    {% endfor %}
+
+    <form action="{% url 'createActivity' %}" >
+        <input type="text" name="activity" placeholder="Activity Name">
+        <input type="submit" value="Create">
+    </form>
+
+{% endblock %}
