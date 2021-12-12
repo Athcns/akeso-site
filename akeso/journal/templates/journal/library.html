@@ -10,7 +10,32 @@
         <input type="text" name="journalName" placeholder="Journal Name">
         <input type="submit" value="Create">
     </form>
+
+    <br>
     <!-- TODO: Insert a way to add your mood for the day using the "mood" function as well as the mood model -->
+    {% if daily_mood %}
+    <form action="{% url 'mood' %}" method="POST">
+        {% csrf_token %}
+        <h3>How are you feeling today?</h3>
+        <input type="number" name="mood_scale" placeholder="1 - 10">
+        <p>What activities did you do today?</p>
+        {% if activities %}
+            {% for activity in activities %}
+                <input type="checkbox" name="activity" id="activity">
+                <label for="activity">{{activity.name}}</label>
+            {% endfor %}
+        {% else %}
+        <p style="text-indent: 15px">You currently do not have any activities created!</p>
+        {% endif %}
+        <input type="submit" value="Confirm">
+    </form>
+    {% endif %}
+    <br>
+
+    <a href="{% url 'viewActivity' %}">View Activities</a>
+
+    <br>
+    <h3>Journals</h3>
     <ul>
         {% for journal in journals %}
             <li>
