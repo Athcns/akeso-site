@@ -30,7 +30,7 @@ class Activity(models.Model):
     # Connects the activity to the specific user
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # Activity name (Eg. Mediation)
-    activity_name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64)
     # Date of Creation
     creation_date = models.DateTimeField(auto_now_add=True)
 
@@ -44,7 +44,7 @@ class Mood(models.Model):
     # Creates a scale from 1 to 10
     mood_scale = models.IntegerField(default=0)
     # Done activities
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    activity = models.ManyToManyField(Activity)
     # Created date
     creation_date = models.DateTimeField(auto_now_add=True)
 
@@ -54,6 +54,6 @@ class Status(models.Model):
 
 class WeeklyUpdate(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    mood_id = models.ForeignKey(Mood, on_delete=models.CASCADE)
+    mood_id = models.ManyToManyField(Mood)
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
 
