@@ -17,7 +17,7 @@
     <form action="{% url 'mood' %}" method="POST">
         {% csrf_token %}
         <h3>How are you feeling today?</h3>
-        <input type="number" name="mood_scale" placeholder="1 - 10">
+        <input type="number" name="mood_scale" placeholder="1 - 10" max="10" min="1">
         <p>What activities did you do today?</p>
         {% if activities %}
             {% for activity in activities %}
