@@ -122,7 +122,6 @@ def create_activity(request):
             return HttpResponseRedirect(reverse("viewActivity"))
         return HttpResponseRedirect(reverse("viewActivity"))
 
-# TODO: Redirect user back to original page
 def delete_activity(request, activityID):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
@@ -135,8 +134,8 @@ def delete_activity(request, activityID):
         user = User.objects.get(id=request.user.id)
         activities = Activity.objects.filter(user_id=user)
 
-        # Returns the user to original activity page with the message clarifying an activiy has been deleted
-        return render(request, "journal/activity", {
+        # Returns the user to original activity page with the message clarifying an activity has been deleted
+        return render(request, "journal/activity.html", {
             "activities": activities,
             "message": f"{activity_name} has been deleted"
         })
