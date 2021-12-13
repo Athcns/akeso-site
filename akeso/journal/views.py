@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 #TODO: Create a way to view the entries details (Their Context and Header)
+#TODO: Create a custom ID number creator for each model created (besides just counting from 1)
 
 # Create your views here.
 def index(request):
@@ -119,11 +120,14 @@ def create_activity(request):
             newActivity.save()
 
             return HttpResponseRedirect(reverse("viewActivity"))
+        return HttpResponseRedirect(reverse("viewActivity"))
 
+# TODO: Redirect user back to original page
 def delete_activity(request, activityID):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
+        # Grabs the correlating activity and deletes it
         activity = Activity.objects.get(id=activityID)
         activity_name = activity.name
         activity.delete()
@@ -131,6 +135,7 @@ def delete_activity(request, activityID):
         user = User.objects.get(id=request.user.id)
         activities = Activity.objects.filter(user_id=user)
 
+        # Returns the user to original activity page with the message clarifying an activiy has been deleted
         return render(request, "journal/activity", {
             "activities": activities,
             "message": f"{activity_name} has been deleted"
