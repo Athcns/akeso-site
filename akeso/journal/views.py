@@ -89,6 +89,9 @@ def journal_view(request, journalID):
             "entries": entries
         })
 
+# Allows users to create mood reports for their day
+# TODO: Allow people to recreate a mood report for the day (Eg. accidently submited)
+# TODO: Compile all the moods in the week and give a weekly update/suggestions
 def mood(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
