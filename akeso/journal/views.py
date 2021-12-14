@@ -16,17 +16,24 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
     else:
         user = User.objects.get(id=request.user.id)
+        date = str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
         library = Journal.objects.filter(writer=user)
-        moodStatus = Mood.objects.filter(user_id=user, creation_date=datetime.today())
+        moodStatus = Mood.objects.filter(user_id=user, creation_date=date)
         activities = Activity.objects.filter(user_id=user)
         # TODO: Allow users to see their Journals numbered 1, 2, 3,... rather than just the
         # primary key number auto assigned to the journal on creation.
-
-        return render(request, "journal/library.html", {
-            "journals": library,
-            "activities": activities,
-            "daily_mood": True
-        })
+        if moodStatus:
+            return render(request, "journal/library.html", {
+                "journals": library,
+                "activities": activities,
+                "daily_mood": False
+            })
+        else:
+            return render(request, "journal/library.html", {
+                "journals": library,
+                "activities": activities,
+                "daily_mood": True
+            })
 
 
 def create_entry(request, journalID):
@@ -86,20 +93,20 @@ def mood(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
-        user = User.objects.get(id=request.user.id)
         if request.method == "POST":
+            user = User.objects.get(id=request.user.id)
+
             mood = request.POST['mood_scale']
             activities = request.POST['activities']
-            if mood <= 10 and mood >= 1:
-                newMood = Mood(user_id=user, mood_scale=mood, activity=activities)
-                newMood.save()
 
-                return HttpResponseRedirect(reverse("index"))
-        return HttpResponseRedirect(reverse("index"))
+            newMood = Mood(user_id=user, mood_scale=mood, activity=activities)
+            newMood.save()
+
+            return HttpResponseRedirect(reverse("index"))
 
 def activity_view(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
+        return HttpResponseRedirect(reverse("login" ))
     else:
         user = User.objects.get(id=request.user.id)
         activities = Activity.objects.filter(user_id=user)

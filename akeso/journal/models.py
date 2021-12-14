@@ -34,6 +34,9 @@ class Activity(models.Model):
     # Date of Creation
     creation_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
 class Mood(models.Model):
     #TODO: When creating the function in views.py, make sure to add a check if the mood scale POSTed is between 1 and 10
 
@@ -42,11 +45,14 @@ class Mood(models.Model):
     # Connects the mood to the Entry
     # entry_id = models.ManyToManyField(Entry)
     # Creates a scale from 1 to 10
-    mood_scale = models.IntegerField(default=0)
+    mood_scale = models.IntegerField(default=5)
     # Done activities
     activity = models.ManyToManyField(Activity)
     # Created date
-    creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_id} - {self.creation_date}"
 
 class Status(models.Model):
     # Connect to user model
