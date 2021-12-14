@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("", views.mood, name="mood"),
+    path("create-mood", views.mood, name="mood"),
     path("activities", views.activity_view, name="viewActivity"),
     path("create-activity", views.create_activity, name="createActivity"),
     path("delete-activity/<int:activityID>", views.delete_activity, name="deleteActivity"),

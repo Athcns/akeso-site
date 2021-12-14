@@ -97,10 +97,14 @@ def mood(request):
             user = User.objects.get(id=request.user.id)
 
             mood = request.POST['mood_scale']
-            activities = request.POST['activities']
+            activities = request.POST.getlist('activity')
 
-            newMood = Mood(user_id=user, mood_scale=mood, activity=activities)
+            newMood = Mood(user_id=user, mood_scale=mood)
             newMood.save()
+            for name in activities:
+                selectedActivity = Activity.objects.get(user_id=user, name=name)
+                newMood.activity.add(selectedActivity)
+                newMood.save()
 
             return HttpResponseRedirect(reverse("index"))
 
