@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate
 from django.urls import reverse
@@ -92,7 +92,7 @@ def journal_view(request, journalID):
 # Allows users to create mood reports for their day
 # TODO: Allow people to recreate a mood report for the day (Eg. accidently submited)
 # TODO: Compile all the moods in the week and give a weekly update/suggestions
-def mood(request):
+def create_mood(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
@@ -109,6 +109,20 @@ def mood(request):
                 newMood.activity.add(selectedActivity)
                 newMood.save()
 
+            return HttpResponseRedirect(reverse("index"))
+
+def delete_mood(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        date = str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+        moodReport = Mood.objects.get(user_id=user, creation_date=date)
+        library = Journal.objects.filter(writer=user)
+        activities = Activity.objects.filter(user_id=user)
+
+        if moodReport:
+            moodReport.delete()
             return HttpResponseRedirect(reverse("index"))
 
 def activity_view(request):

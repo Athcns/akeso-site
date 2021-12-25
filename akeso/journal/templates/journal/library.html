@@ -31,6 +31,9 @@
         <br>
         <input type="submit" value="Confirm">
     </form>
+    {% else %}
+    <p>It seems that you have made a mood report today!</p>
+    <a href="{% url 'deleteMood' %}">Recreate</a>
     {% endif %}
     <br>
 
