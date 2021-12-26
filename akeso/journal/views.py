@@ -77,7 +77,7 @@ def create_journal(request):
         return HttpResponseRedirect(reverse("index"))
 
 
-def journal_view(request, journalID):
+def view_journal(request, journalID):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
@@ -141,6 +141,7 @@ def create_weekly_update(request):
                                         creation_date__range=[week[0].strftime("20%y-%m-%d"),
                                                               week[6].strftime("20%y-%m-%d")])
 
+        # Checks if the user has made any mood reports for that week
         if weekMoods:
             # Create a weekly status report to connect to the status reports
             weeklyUpdate = WeeklyUpdate(user_id=user)
@@ -168,7 +169,7 @@ def create_weekly_update(request):
         else:
             return HttpResponseRedirect(reverse("index"))
 
-def activity_view(request):
+def view_activity(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login" ))
     else:
@@ -211,7 +212,7 @@ def delete_activity(request, activityID):
             "message": f"{activity_name} has been deleted"
         })
 
-def read(request, entryID,journalID):
+def view_entry(request, entryID,journalID):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
