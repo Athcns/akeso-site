@@ -9,7 +9,7 @@ class Journal(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.writer} | {self.id}"
 
 class Entry(models.Model):
     # Accesses the entries with the same journal primary keys

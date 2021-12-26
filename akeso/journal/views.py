@@ -149,18 +149,21 @@ def create_weekly_update(request):
             # Iterates through each mood made in that week
             for i in weekMoods:
                 # Grabs the mood report's date and the specific day name (eg. Sunday)
-                day = datetime.strptime(i.creation_date, "20%y-%m-%d").strftime("%A")
+                day = datetime.strptime(str(i.creation_date), "20%y-%m-%d").strftime("%A")
 
                 # Creates a new Status report that will connect the mood report to the weekly update
                 newStatus = Status(user_id=user,
                                    mood_id=i,
-                                   activity=i.activity,
                                    week_date=i.creation_date,
-                                   week_name=day)
+                                   day_name=day)
+                newStatus.save()
+                newStatus.activity.set(i.activity.all())
                 newStatus.save()
 
                 # Connects the new Status to the weekly update created above
-                weeklyUpdate.add(newStatus)
+                weeklyUpdate.status_id.add(newStatus)
+
+            return HttpResponseRedirect(reverse("index"))
 
         else:
             return HttpResponseRedirect(reverse("index"))
