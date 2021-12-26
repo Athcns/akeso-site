@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from .models import Journal, Entry, Activity, Mood, Status, WeeklyUpdate
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 #TODO: Create a way to view the entries details (Their Context and Header)
 #TODO: Create a custom ID number creator for each model created (besides just counting from 1)
@@ -123,6 +123,46 @@ def delete_mood(request):
 
         if moodReport:
             moodReport.delete()
+            return HttpResponseRedirect(reverse("index"))
+
+def create_weekly_update(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+
+        currentDate = date.today()
+        currentWeekday = currentDate.weekday()
+        week = []
+        for i in range(0 - currentWeekday, 7 - currentWeekday):
+            week.append(currentDate + timedelta(days=i))
+
+        weekMoods = Mood.objects.filter(user_id=user,
+                                        creation_date__range=[week[0].strftime("20%y-%m-%d"),
+                                                              week[6].strftime("20%y-%m-%d")])
+
+        if weekMoods:
+            # Create a weekly status report to connect to the status reports
+            weeklyUpdate = WeeklyUpdate(user_id=user)
+            weeklyUpdate.save()
+
+            # Iterates through each mood made in that week
+            for i in weekMoods:
+                # Grabs the mood report's date and the specific day name (eg. Sunday)
+                day = datetime.strptime(i.creation_date, "20%y-%m-%d").strftime("%A")
+
+                # Creates a new Status report that will connect the mood report to the weekly update
+                newStatus = Status(user_id=user,
+                                   mood_id=i,
+                                   activity=i.activity,
+                                   week_date=i.creation_date,
+                                   week_name=day)
+                newStatus.save()
+
+                # Connects the new Status to the weekly update created above
+                weeklyUpdate.add(newStatus)
+
+        else:
             return HttpResponseRedirect(reverse("index"))
 
 def activity_view(request):

@@ -57,15 +57,18 @@ class Mood(models.Model):
 class Status(models.Model):
     # Connect to user model
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    # Moods from the week
-    moods = models.ManyToManyField(Mood)
-    # Creation Date
-    creation_date = models.DateField(auto_now_add=True)
+    # Mood from that day
+    mood_id = models.ForeignKey(Mood, on_delete=models.CASCADE)
+    # Activities from that day
+    activity = models.ManyToManyField(Activity)
+    # Weekday Date For the specified mood
+    week_date = models.DateField(auto_now_add=False)
+    # Weekday name and date (Eg. "Sunday, Dec 26, 2021)
+    day_name = models.CharField(max_length=50)
 
 class WeeklyUpdate(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    mood_id = models.ForeignKey(Mood, on_delete=models.CASCADE)
-    status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
-    # Number of occourances
-    number_occ = models.IntegerField()
+    # Links to the status models created for that week
+    status_id = models.ManyToManyField(Status)
+    creation_date = models.DateField(auto_now_add=True)
 
