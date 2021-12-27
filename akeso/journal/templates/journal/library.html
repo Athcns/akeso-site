@@ -5,15 +5,15 @@
     <div>User: {{ request.user.username }}</div>
     <p>This is the directory for all the journals you have written!</p>
 
-    <form action="{% url 'createJournal' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="journalName" placeholder="Journal Name">
-        <input type="submit" value="Create">
-    </form>
+    {% if not weekly_report %}
+        <a href="{% url 'createWeeklyReport' %}">Create a weekly report</a>
+    {% else %}
+        <p>You have already made a weekly report!</p>
+    {% endif %}
 
     <br>
     <!-- TODO: Insert a way to add your mood for the day using the "mood" function as well as the mood model -->
-    {% if daily_mood %}
+    {% if not daily_mood %}
     <form action="{% url 'mood' %}" method="POST">
         {% csrf_token %}
         <h3>How are you feeling today?</h3>
@@ -50,6 +50,14 @@
             </li>
         {% endfor %}
     </ul>
+
+    <br>
+    <form action="{% url 'createJournal' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="journalName" placeholder="Journal Name">
+        <input type="submit" value="Create">
+    </form>
+    <br>
 
     <a href="{% url 'logout' %}">Log Out</a>
 {% endblock %}
