@@ -21,9 +21,20 @@ def index(request):
         library = Journal.objects.filter(writer=user)
         moodStatus = Mood.objects.filter(user_id=user, creation_date=currentDate)
         # Check if there is an existing Mood Status for the day
-        moodValid = True
+        moodValid = False
         if moodStatus:
-            moodValid = False
+            moodValid = True
+
+        # Grabs the dates for the current week (Monday to Sunday)
+        week = currentWeek()
+        # Filters through the weeklyUpdate model to see if the user has already created a weekly report
+        weeklyReport = WeeklyUpdate.objects.filter(user_id=user,
+                                                   creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                         week[6].strftime("%Y-%m-%d")])
+        # Checks if there has been a mood report already created or not
+        weeklyValid = False
+        if weeklyReport:
+            weeklyValid = True
 
         activities = Activity.objects.filter(user_id=user)
         # TODO: Allow users to see their Journals numbered 1, 2, 3,... rather than just the
@@ -31,7 +42,8 @@ def index(request):
         return render(request, "journal/library.html", {
             "journals": library,
             "activities": activities,
-            "daily_mood": moodValid
+            "daily_mood": moodValid,
+            "weekly_report": weeklyValid
         })
 
 
