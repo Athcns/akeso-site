@@ -16,24 +16,22 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
     else:
         user = User.objects.get(id=request.user.id)
-        date = str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+        currentDate = str(date.today())
         library = Journal.objects.filter(writer=user)
-        moodStatus = Mood.objects.filter(user_id=user, creation_date=date)
+        moodStatus = Mood.objects.filter(user_id=user, creation_date=currentDate)
+        # Check if there is an existing Mood Status for the day
+        moodValid = True
+        if moodStatus:
+            moodValid = False
+
         activities = Activity.objects.filter(user_id=user)
         # TODO: Allow users to see their Journals numbered 1, 2, 3,... rather than just the
         # primary key number auto assigned to the journal on creation.
-        if moodStatus:
-            return render(request, "journal/library.html", {
-                "journals": library,
-                "activities": activities,
-                "daily_mood": False
-            })
-        else:
-            return render(request, "journal/library.html", {
-                "journals": library,
-                "activities": activities,
-                "daily_mood": True
-            })
+        return render(request, "journal/library.html", {
+            "journals": library,
+            "activities": activities,
+            "daily_mood": moodValid
+        })
 
 
 def create_entry(request, journalID):
@@ -116,8 +114,8 @@ def delete_mood(request):
         return HttpResponseRedirect(reverse("login"))
     else:
         user = User.objects.get(id=request.user.id)
-        date = str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
-        moodReport = Mood.objects.get(user_id=user, creation_date=date)
+        currentDate = str(date.today())
+        moodReport = Mood.objects.get(user_id=user, creation_date=currentDate)
         library = Journal.objects.filter(writer=user)
         activities = Activity.objects.filter(user_id=user)
 
