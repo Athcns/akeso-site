@@ -9,6 +9,7 @@
         <a href="{% url 'createWeeklyReport' %}">Create a weekly report</a>
     {% else %}
         <p>You have already made a weekly report!</p>
+        <a href="{% url 'deleteWeeklyReport' %}">Remake a weekly report</a>
     {% endif %}
 
     <br>

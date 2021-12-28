@@ -200,6 +200,28 @@ def create_weekly_update(request):
         else:
             return HttpResponseRedirect(reverse("index"))
 
+def delete_weekly_update(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        currentDate = date.today()
+        week = currentWeek()
+
+        # Grabs all the status created in the corresponding week
+        weekStatus = Status.objects.filter(user_id=user,
+                                            creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                    week[6].strftime("%Y-%m-%d")])
+        # Grabs the weeklyUpdate object made in the corresponding week
+        weekReport = WeeklyUpdate.objects.get(user_id=user,
+                                              creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                    week[6].strftime("%Y-%m-%d")])
+        # Deletes the Status and WeeklyUpdate objects created
+        weekReport.delete()
+        weekStatus.delete()
+
+        return HttpResponseRedirect(reverse("index"))
+
 def view_activity(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login" ))
