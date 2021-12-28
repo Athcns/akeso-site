@@ -153,6 +153,7 @@ def create_weekly_update(request):
         if weekMoods:
             # Create a weekly status report to connect to the status reports
             weeklyUpdate = WeeklyUpdate(user_id=user)
+
             weeklyUpdate.save()
 
             # Iterates through each mood made in that week
@@ -171,6 +172,28 @@ def create_weekly_update(request):
 
                 # Connects the new Status to the weekly update created above
                 weeklyUpdate.status_id.add(newStatus)
+
+            # Creating Stats for the weeklyUpdate
+            ordered_status = weekMoods.order_by('-mood_scale')
+            bestDayStatus = Status.objects.get(user_id=user, mood_id=ordered_status[0])
+            weeklyUpdate.best_day.add(bestDayStatus)
+            temp_mood = 0
+            for i in ordered_status:
+                temp_mood += i.mood_scale
+            weeklyUpdate.average_value = ((temp_mood/len(ordered_status)))
+            weeklyUpdate.num_of_moods = (len(ordered_status))
+
+            activities = {}
+            for i in ordered_status:
+                for j in i.activity.all():
+                    if j.name in activities:
+                        activities[j.name] += 1
+                    else:
+                        activities[j.name] = 1
+            weeklyUpdate.often_activity = (Activity.objects.get(name=max(activities), user_id=user))
+            weeklyUpdate.often_value = (activities[max(activities)])
+            weeklyUpdate.save()
+
 
             return HttpResponseRedirect(reverse("index"))
 
