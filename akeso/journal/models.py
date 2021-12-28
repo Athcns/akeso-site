@@ -65,10 +65,30 @@ class Status(models.Model):
     week_date = models.DateField(auto_now_add=False)
     # Weekday name and date (Eg. "Sunday, Dec 26, 2021)
     day_name = models.CharField(max_length=50)
+    # Creation date and time
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_id} - {self.creation_date}"
 
 class WeeklyUpdate(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # Links to the status models created for that week
-    status_id = models.ManyToManyField(Status)
+    status_id = models.ManyToManyField(Status, related_name="status_id")
     creation_date = models.DateField(auto_now_add=True)
+
+    # The highest mood scale day(s) of that week
+    best_day = models.ManyToManyField(Status, related_name="best_day")
+
+    # Mean value of the mood that week
+    average_value = models.IntegerField(null=True)
+    # Days in the week where the mood has been made
+    num_of_moods = models.IntegerField(null=True)
+
+    # Stats for the most often occuring activity in that week
+    often_activity = models.ForeignKey(Activity, on_delete=models.CASCADE, null=True)
+    often_value = models.IntegerField(null=True)
+
+    def __str__(self):
+        return f"{self.user_id} | {self.id} | {self.creation_date}"
 
