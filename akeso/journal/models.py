@@ -89,6 +89,9 @@ class WeeklyUpdate(models.Model):
     often_activity = models.ForeignKey(Activity, on_delete=models.CASCADE, null=True)
     often_value = models.IntegerField(null=True)
 
+    # Activity that is suggested to improve mood
+    suggested_activity = models.ManyToManyField(Activity, related_name="suggested_activity")
+
     def __str__(self):
         return f"{self.user_id} | {self.id} | {self.creation_date}"
 

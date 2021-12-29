@@ -174,6 +174,7 @@ def create_weekly_update(request):
                 weeklyUpdate.status_id.add(newStatus)
 
             # Creating Stats for the weeklyUpdate
+            # Makes a queryset of the Moods for that week ordered by their mood scale (descending)
             ordered_status = weekMoods.order_by('-mood_scale')
             bestDayStatus = Status.objects.get(user_id=user, mood_id=ordered_status[0])
             weeklyUpdate.best_day.add(bestDayStatus)
@@ -183,17 +184,53 @@ def create_weekly_update(request):
             weeklyUpdate.average_value = ((temp_mood/len(ordered_status)))
             weeklyUpdate.num_of_moods = (len(ordered_status))
 
-            activities = {}
+            oft_activities = {}
+            sug_activities = {}
+            order_activities = []
+            # Iterates through each Mood in the query set
             for i in ordered_status:
+                # Iterates through each activity inside a specific Mood
                 for j in i.activity.all():
-                    if j.name in activities:
-                        activities[j.name] += 1
+                    if j.name in oft_activities:
+                        oft_activities[j.name] += 1
+                        #                        adds 1 to the number of occurrences this activity appeared this week
+                        sug_activities[j.name][0] += 1
+                        #                        adds the mood scale for that day to the sum of mood scale
+                        sug_activities[j.name][1] += i.mood_scale
                     else:
-                        activities[j.name] = 1
-            weeklyUpdate.often_activity = (Activity.objects.get(name=max(activities), user_id=user))
-            weeklyUpdate.often_value = (activities[max(activities)])
+                        oft_activities[j.name] = 1
+                        #                        [num of occurrences, sum of mood scale, mean of the mood scale]
+                        sug_activities[j.name] = [1, i.mood_scale, None]
+                        order_activities.append(j.name)
+
+            weeklyUpdate.often_activity = (Activity.objects.get(name=max(oft_activities), user_id=user))
+            weeklyUpdate.often_value = (oft_activities[max(oft_activities)])
             weeklyUpdate.save()
 
+            # Iterates through the suggested activities dictionary to find the mean values of each
+            for key, value in sug_activities.items():
+                # Calculates the mean mood scale by dividing the Sum of Mood Scale by the Num of Occurrences
+                meanMood = (value[1]/value[0])
+                # Places the calculated mean value into the dictionary
+                sug_activities[key][2] = meanMood
+
+            # Bubble sort the activities based on the mean mood scale for each (descending)
+            for i in range(len(order_activities)):
+                for j in range(len(order_activities) - i - 1):
+                    if sug_activities[order_activities[j]][2] < sug_activities[order_activities[j + 1]][2]:
+                        order_activities[j], order_activities[j + 1] = order_activities[j + 1], order_activities[j]
+
+            # Adds all the suggested activities to the weeklyUpdate object
+            switch = True
+            while switch:
+                for i in range(len(order_activities)):
+                    if sug_activities[order_activities[i]][2] == sug_activities[order_activities[0]][2]:
+                        suggestedActivity = Activity.objects.get(user_id=user, name=order_activities[i])
+                        weeklyUpdate.suggested_activity.add(suggestedActivity)
+                    else:
+                        switch = False
+
+            weeklyUpdate.save()
 
             return HttpResponseRedirect(reverse("index"))
 
