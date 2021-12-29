@@ -136,6 +136,7 @@ def delete_mood(request):
             moodReport.delete()
             return HttpResponseRedirect(reverse("index"))
 
+# TODO: Code here runs slow, should figure a way to optimize it
 def create_weekly_update(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
