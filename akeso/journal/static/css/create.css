@@ -1,0 +1,36 @@
+.entry-details {
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+  min-width: auto;
+}
+
+.entry-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.create-button {
+  display: flex;
+  justify-content: right;
+  margin-right: 30px;
+  margin-top: 10px;
+}
+
+.h3 {
+}
+
+.entry h3 {
+  margin-left: 30px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.entry h2 {
+  font-size: 25px;
+  margin-left: 30px;
+  font-weight: 500;
+}
+

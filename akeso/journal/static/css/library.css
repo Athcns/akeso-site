@@ -1,0 +1,83 @@
+.journal-name {
+  text-decoration: none;
+  color: #1485ee;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.journal-access {
+  opacity: 0.8;
+  text-align: right;
+  font-style: italic;
+}
+
+.library-title {
+  font-size: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.library {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.create-journal {
+  margin-left: 20px;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-input {
+  margin-bottom: 10px;
+}
+
+.create-journal button {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.create-journal p {
+  margin: 3px;
+  opacity: 0.75;
+  font-size: 15px;
+  font-style: italic;
+  text-align: center;
+}
+
+.day-report .date {
+  font-style: italic;
+  margin-left: 10px;
+  opacity: 0.5;
+}
+
+.day-report {
+}
+
+.journal-name:hover {
+  text-decoration: underline;
+}
+
+.journal-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.library-head {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 5px;
+  box-shadow: 0px 1px 8px 0px var(--bs-gray-900);
+}
+
+.remake-day p {
+  font-style: italic;
+  margin-bottom: 0px;
+  opacity: 0.8;
+}
+
+.view-activity-button {
+  margin-left: 12px;
+}
+

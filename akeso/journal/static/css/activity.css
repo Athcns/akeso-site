@@ -1,0 +1,57 @@
+.activity-head h1 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.activity-head p {
+  font-style: italic;
+  opacity: 0.75;
+  font-size: 15px;
+}
+
+.activity-head {
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.activity-col {
+  display: flex;
+  justify-content: space-between;
+}
+
+.activities {
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 10px;
+}
+
+.activities p {
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.create-activity {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 20px;
+}
+
+.create-activity input {
+  margin-right: 10px;
+}
+
+.activity-head a {
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: #1485ee;
+  opacity: 0.75;
+  font-size: 15px;
+}
+
+.activity-head a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  font-weight: 600;
+}

@@ -1,0 +1,39 @@
+.entry {
+}
+
+.details {
+  margin-right: 30px;
+  margin-left: 30px;
+  text-align: right;
+  margin-bottom: 3px;
+}
+
+.details p {
+  margin-bottom: 0px;
+  opacity: 0.5;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.entry-content {
+  margin-left: 30px;
+  margin-right: 30px;
+  font-size: 15px;
+  margin-top: 3px;
+}
+
+.entry a {
+  margin-left: 30px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: #1485ee;
+  opacity: 0.75;
+  font-size: 15px;
+}
+
+.entry a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  font-weight: 600;
+}
+

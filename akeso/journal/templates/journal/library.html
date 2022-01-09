@@ -6,12 +6,16 @@
             <h2>Welcome, {{ request.user.username }}!</h2>
             <p>I hope your day has been going well, are you here to write an entry or day report?</p>
 
-            {% if not daily_mood %}
+        {% if not daily_mood %}
             <div class="day-report">
 
                 <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#dayReport">
                     Create Day Report
                 </button>
+
+                <a class="view-activity-button" href="{% url 'viewActivity' %}">
+                    <button class="btn btn-primary" type="button" style="padding: 6px 12px;">View Activities</button>
+                </a>
 
                 <div class="modal fade" tabindex="-1" id="dayReport" aria-labelledby="userDayReport" aria-hidden="true">
                     <div class="modal-dialog">
@@ -55,11 +59,16 @@
             </div>
         </div>
         {% else %}
-        <p>It seems that you have made a mood report today!</p>
-        <a href="{% url 'deleteMood' %}">Recreate</a>
+        <div class="remake-day">
+            <p>You've already made a day report! You can make a new one by deleting the current one below.</p>
+            <a href="{% url 'deleteMood' %}">
+                <button class="btn btn-primary" type="button">Delete Day Report</button>
+            </a>
+            <a class="view-activity-button" href="{% url 'viewActivity' %}">
+                <button class="btn btn-primary" type="button" style="padding: 6px 12px;">View Activities</button>
+            </a>
+        </div>
         {% endif %}
-
-        <a href="{% url 'viewActivity' %}">View Activities</a>
 
         <div class="library">
             <h3 class="library-title">Library</h3>
