@@ -1,0 +1,63 @@
+{% extends 'users/layout.html' %}
+
+{% block body %}
+    {% load static %}
+    <section class="write-your-story">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="intro">
+                        <h2>Write your story</h2>
+                        <p>Come and write your personal story on Akeso. A place for you to write your thoughts and day! Akeso is the personal diary that is fully digital. You can write when you want and whatever you want! Akeso will even try to help you with improving your day if you want it to!</p>
+                        <a class="btn btn-primary" role="button" href="{% url 'register' %}">Join now</a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="d-none d-md-block">
+                        <img class="writing" src="{% static 'img/person-writing.png' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="whatis" id="what-is-akeso">
+        <div class="container">
+            <div>
+                <h1 class="text-center">What is Akeso?</h1>
+                <p>Akeso was created in mind for people. It started off as a simple diary people could access with the web but then grew into more allowing people to document their feelings with provided feedback. If you've ever wanted to write a diary or atleast take a few minutes of your day to write how your day went then Akeso is a place for you. It's a simple to use diary site that has no fees hidden behind it and features are not masked behind subscriptions.<br><br>Akeso was originally a personal project started during COVID-19 times where people's moods were low. It was a time where my mind also began to break down and my mood was getting worse. Motivation was low and times were tough since the freedom we once had was so limited; however, I took up meditation and self improvement in order to counter that. I discovered the possibilities of mental health and how much of a difference it can make to work on them. One of the big methods I used was writing in my own personal diary. After some time writing in it and writing my own thoughts, I thought that I could make one online for others to use. From that thought Akeso was born.&nbsp;</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature" id="features">
+        <div class="container">
+            <div class="intro">
+                <h1 class="text-center">Features</h1>
+                <p class="text-center">Akeso was designed for people to write in their virtual journal with an additional tracking system for their wellbeing.</p>
+            </div>
+            <div>
+                <div class="row d-xxl-flex justify-content-center features">
+                    <div class="col-sm-6 col-lg-4 item"><i class="fa fa-cloud icon"></i>
+                        <h3 class="name">Cloud Stored</h3>
+                        <p class="description">Everything is stored onto the cloud allowing you to access this anywhere with an internet connection nearby.</p>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 item"><i class="fa fa-paper-plane icon"></i>
+                        <h3 class="name">Fast</h3>
+                        <p class="description">Aenean tortor est, vulputate quis leo in, vehicula rhoncus lacus. Praesent aliquam in tellus eu gravida. Aliquam varius finibus est.</p>
+                    </div>
+                </div>
+                <div class="row justify-content-center features">
+                    <div class="col-sm-6 col-lg-4 item"><i class="fa fa-list-alt icon"></i>
+                        <h3 class="name">Weekly Reports</h3>
+                        <p class="description">Using your mood reports, Akeso will try to let you know how your week was according to yourself. It will also try to help improve your upcoming week!</p>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 item"><i class="fa fa-clock-o icon"></i>
+                        <h3 class="name">Always available</h3>
+                        <p class="description">Whenever you want to write your story, you can! The website is fully online and can be accessed with a device that has an internet connection.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
