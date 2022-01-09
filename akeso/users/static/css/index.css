@@ -1,0 +1,145 @@
+.feature .intro {
+  font-size: 16px;
+  max-width: 500px;
+  margin: 0 auto 60px;
+}
+
+.feature h1 {
+  color: black;
+  font-weight: bold;
+  padding-bottom: 25px;
+  margin-top: 25px;
+  font-size: 35px;
+}
+
+.feature p {
+  color: #7d8285;
+  font-size: 17px;
+}
+
+.feature .item {
+  min-height: 100px;
+  padding-left: 80px;
+  margin-bottom: 40px;
+}
+
+.feature .item .icon {
+  font-size: 40px;
+  color: #1485ee;
+  float: left;
+  margin-left: -65px;
+}
+
+.feature .item .name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: inherit;
+}
+
+.feature {
+  color: #313437;
+  background-color: #ffffff;
+  padding-bottom: 30px;
+  padding-top: 20px;
+}
+
+.feature .item .description {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.whatis h1 {
+  color: black;
+  font-weight: bold;
+  padding-bottom: 25px;
+  margin-top: 25px;
+  font-size: 35px;
+}
+
+.whatis p {
+  color: inherit;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 16px;
+}
+
+.whatis {
+  padding-left: 18px;
+  padding-right: 19px;
+  margin-top: 10px;
+  background-color: #ffffff;
+  color: #313437;
+}
+
+.write-your-story p {
+  color: #7d8285;
+}
+
+.write-your-story .intro p {
+  margin-bottom: 35px;
+}
+
+.write-your-story.intro .btn {
+  padding: 16px 32px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+  opacity: 0.9;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  line-height: 1;
+}
+
+.write-your-story .intro .btn:hover {
+  opacity: 1;
+}
+
+.write-your-story .intro .btn:active {
+  transform: translateY(1px);
+}
+
+.write-your-story .intro .btn-primary {
+  background-color: #1485ee;
+  color: #fff;
+}
+
+.write-your-story .intro {
+  font-size: 18px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.write-your-story h2 {
+  font-weight: bold;
+  margin-bottom: 35px;
+  line-height: 1.5;
+  padding-top: 0;
+  margin-top: 0;
+  color: inherit;
+}
+
+.write-your-story {
+  color: #313437;
+  /*background-color: #eef4f7;*/
+  padding: 50px 0 55px;
+  overflow: hidden;
+}
+
+.writing {
+  width: 100%;
+  height: auto;
+  filter: hue-rotate(48deg);
+  transform: rotate(14deg) scale(1.22);
+}
+
+@media (max-width:767px) {
+  .write-your-story .intro {
+    max-width: none;
+  }
+}
+
