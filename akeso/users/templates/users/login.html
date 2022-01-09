@@ -1,21 +1,30 @@
-{% extends "users/layout.html" %}
+{% extends 'users/layout.html' %}
 
 {% block body %}
+    <section class="login">
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <h2 class="visually-hidden">Login Form</h2>
+            <div class="illustration"><i class="fas fa-brain"></i></div>
+            <h1 style="text-align: center;font-size: 23px;font-weight: bold;padding-bottom: 10px;">Log into Akeso</h1>
+            {% if message %}
+                <p class="text"> {{ message }}</p>
+            {% endif %}
+            <div>
+                <input class="form-control mb-3" type="text" name="username" placeholder="Username">
+                <input class="form-control mb-3" type="password" name="password" placeholder="Password">
+            </div>
 
-    {% if message %}
-        <div> {{ message }}</div>
-    {% endif %}
+            <a class="forgot" href="#">Forgot your email or password?</a>
 
-    <form action="{% url 'login' %}" method="post">
-        {% csrf_token %}
-        <div class="input-group">
-            <input type="text" name="username" placeholder="Username" class="form-control">
-        </div>
-        <div class="input-group">
-            <input type="password" name="password" placeholder="Password" class="form-control">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Login" >
-    </form>
+            <div class="mb-3">
+                <button class="btn btn-primary d-block w-100" type="submit">Log In</button>
+            </div>
 
-    <a href="{% url 'register' %}">Register</a>
+            <p class="text">OR</p>
+
+            <div class="redirect">
+                <a href="{% url 'register' %}">SIGN UP</a>
+            </div>
+        </form>
 {% endblock %}
