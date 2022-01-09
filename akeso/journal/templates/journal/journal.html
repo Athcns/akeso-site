@@ -1,22 +1,30 @@
 {% extends 'journal/layout.html' %}
 
 {% block body %}
-    <h1>{{ journal.name }}</h1>
-    <div>User: {{ request.user.username  }}</div>
-
-    <h3>Entries</h3>
-    <div>
-        {% for entry in entries %}
-            <ul>
-                <a href="{% url 'readEntry' entryID=entry.id journalID=journal.id %}">
-                    Entry {{ entry.id }}: {{ entry.header }}
+    <section>
+        <div class="journal-title">
+            <h1>{{ journal.name }}</h1>
+            <p>Created: {{ journal.creation_date }}</p>
+        </div>
+        <div class="journal-entries">
+            <h3>Entries</h3>
+            <div class="create-entry">
+                <a href="{% url 'createEntry' journalID=journal.id %}">
+                    <button class="btn btn-primary" type="button">Create Entry</button>
                 </a>
-            </ul>
-        {% endfor %}
-    </div>
-
-    <br>
-    <a href="{% url 'createEntry' journalID=journal.id %}">Create a new Entry</a>
-    <br>
-    <a href="{% url 'index' %}">Return to Library</a>
+            </div>
+            <div class="container">
+                {% for entry in entries %}
+                    <div class="row">
+                        <div class="col entry-col">
+                            <a href="{% url 'readEntry' entryID=entry.id journalID=journal.id %}">
+                                {{ entry.header }}
+                            </a>
+                            <p>{{ entry.accessed_date }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {% endblock %}

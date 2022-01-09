@@ -1,15 +1,22 @@
 {% extends 'journal/layout.html' %}
 
 {% block body %}
-    <h1>New Entry</h1>
-    <br>
-
-    <form action="{% url 'createEntry' journalID=journal.id %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="header" placeholder="Title">
-        <input type="text" name="content" placeholder="Content">
-        <input type="submit" value="Create">
-    </form>
-
-    <a href="{% url 'viewJournal' journal.id %}">Return to Journal</a>
+    <section>
+        <div class="entry">
+            <h2>Create Entry</h2>
+            <form action="{% url 'createEntry' journalID=journal.id %}" method="POST">
+                {% csrf_token %}
+                <div class="entry-title">
+                    <input class="form-control form-control-lg" type="text" name="header" placeholder="Title">
+                </div>
+                <h3>Details</h3>
+                <div class="entry-details">
+                    <textarea class="form-control" name="content" placeholder="Your story today..."></textarea>
+                </div>
+                <div class="create-button">
+                    <button class="btn btn-primary" type="submit">Create</button>
+                </div>
+            </form>
+        </div>
+    </section>
 {% endblock %}

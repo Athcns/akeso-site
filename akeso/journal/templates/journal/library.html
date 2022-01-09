@@ -1,64 +1,91 @@
 {% extends 'journal/layout.html' %}
 
 {% block body %}
-    <h1>Journals</h1>
-    <div>User: {{ request.user.username }}</div>
-    <p>This is the directory for all the journals you have written!</p>
+    <section>
+        <div class="library-head">
+            <h2>Welcome, {{ request.user.username }}!</h2>
+            <p>I hope your day has been going well, are you here to write an entry or day report?</p>
 
-    {% if not weekly_report %}
-        <a href="{% url 'createWeeklyReport' %}">Create a weekly report</a>
-    {% else %}
-        <p>You have already made a weekly report!</p>
-        <a href="{% url 'deleteWeeklyReport' %}">Remake a weekly report</a>
-    {% endif %}
+            {% if not daily_mood %}
+            <div class="day-report">
 
-    <br>
-    <!-- TODO: Insert a way to add your mood for the day using the "mood" function as well as the mood model -->
-    {% if not daily_mood %}
-    <form action="{% url 'mood' %}" method="POST">
-        {% csrf_token %}
-        <h3>How are you feeling today?</h3>
-        <input type="number" name="mood_scale" placeholder="1 - 10" max="10" min="1" value="5">
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#dayReport">
+                    Create Day Report
+                </button>
 
-        <p>What activities did you do today?</p>
-        {% if activities %}
-            {% for activity in activities %}
-                <input type="checkbox" name="activity" value="{{ activity.name }}">
-                <label for="activity">{{ activity.name }}</label>
-            {% endfor %}
+                <div class="modal fade" tabindex="-1" id="dayReport" aria-labelledby="userDayReport" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="userDayReport">Day Report</h4>
+                                <p class="date">Current Date</p>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <form method="post" action="{% url 'mood' %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                        <p>How are your feeling today?</p><input class="form-control" type="number" name="mood_scale" placeholder="1-10" max="10" min="1" value="5">
+                                        <p>What activities did you do today?</p>
+
+                                        {% if activities %}
+                                            {% for activity in activities %}
+                                                <div class="row">
+                                                    <div class="col activity-col">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="activity" value="{{ activity.name }}">
+                                                            <label class="form-check-label" for="activity">{{ activity.name }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>You currently do not have any activities created!</p>
+                                        {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="submit">Make Report</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% else %}
-        <p style="text-indent: 15px">You currently do not have any activities created!</p>
+        <p>It seems that you have made a mood report today!</p>
+        <a href="{% url 'deleteMood' %}">Recreate</a>
         {% endif %}
-        <br>
-        <input type="submit" value="Confirm">
-    </form>
-    {% else %}
-    <p>It seems that you have made a mood report today!</p>
-    <a href="{% url 'deleteMood' %}">Recreate</a>
-    {% endif %}
-    <br>
 
-    <a href="{% url 'viewActivity' %}">View Activities</a>
+        <a href="{% url 'viewActivity' %}">View Activities</a>
 
-    <br>
-    <h3>Journals</h3>
-    <ul>
-        {% for journal in journals %}
-            <li>
-                <a href="{% url 'viewJournal' journalID=journal.id %}">
-                    Journal {{ journal.id }}: {{ journal.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+        <div class="library">
+            <h3 class="library-title">Library</h3>
+            <div class="container">
+                {% for journal in journals %}
+                    <div class="row">
+                        <div class="col journal-row">
+                            <a class="journal-name" href="{% url 'viewJournal' journalID=journal.id %}">
+                                {{ journal.name }}
+                            </a>
+                            <p class="journal-access">
+                                Accessed Date
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 
-    <br>
-    <form action="{% url 'createJournal' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="journalName" placeholder="Journal Name">
-        <input type="submit" value="Create">
-    </form>
-    <br>
-
-    <a href="{% url 'logout' %}">Log Out</a>
+        <div class="create-journal">
+            <p>Below is how you make a new journal</p>
+            <form method="post" action="{% url 'createJournal' %}">
+                {% csrf_token %}
+                <input class="form-control journal-input" type="text" name="journalName" placeholder="Journal Name">
+                <button class="btn btn-primary" type="submit">Create Journal</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}

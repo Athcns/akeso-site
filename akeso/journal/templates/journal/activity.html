@@ -1,29 +1,33 @@
 {% extends 'journal/layout.html' %}
 
 {% block body %}
-
-    <h1>Activities</h1>
-    <p>This is the page for viewing your current activities and creating new ones!</p>
-
-    <br>
-    {% if message %}
-        {{message}}
-        <br>
-    {% endif %}
-
-    {% for activity in activities %}
-        <ul>
-            {{ activity.name }}
-            <a href="{% url 'deleteActivity' activityID=activity.id %}">Delete</a>
-        </ul>
-    {% endfor %}
-
-    <form action="{% url 'createActivity' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="activity" placeholder="Activity Name">
-        <input type="submit" value="Create">
-    </form>
-
-    <br>
-    <a href="{% url 'index' %}">Return to Main Page</a>
+    <section>
+        <div class="activity-head">
+            <a href="{% url 'index' %}">
+                <i class="fas fa-arrow-left"></i>
+                Return
+            </a>
+            <h1>Activities</h1>
+            <p>Create or delete any activities that you do in your life! (eg. Nap)</p>
+        </div>
+        <div>
+            <form class="create-activity" method="post" action="{% url 'createActivity' %}">
+                {% csrf_token %}
+                <input class="form-control" type="text" placeholder="Activity Name" name="activity">
+                <button class="btn btn-primary" type="submit">Create</button>
+            </form>
+        </div>
+        <div class="activities">
+            {% for activity in activities %}
+                <div class="row">
+                    <div class="col activity-col">
+                        <p>{{ activity.name }}</p>
+                        <a href="{% url 'deleteActivity' activityID=activity.id %}">
+                            <button class="btn btn-primary" type="button">Delete</button>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
