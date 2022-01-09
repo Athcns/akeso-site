@@ -1,16 +1,35 @@
-{% extends "users/layout.html" %}
+{% extends 'users/layout.html' %}
 
 {% block body %}
+    <section class="login">
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <h2 class="visually-hidden">Register Form</h2>
+            <div class="illustration">
+                <i class="fas fa-brain"></i>
+            </div>
 
-    <h1>Register for an Account</h1>
+            <h1 style="text-align: center;font-size: 23px;font-weight: bold;padding-bottom: 10px;">Sign up to Akeso</h1>
 
-    <form action="{% url 'register' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username">
-        <input type="text" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Password">
-        <input type="submit" value="Register">
-    </form>
+            {% if message %}
+                <p class="text"> {{ message }}</p>
+            {% endif %}
 
-    <a href="{% url 'login' %}">Return to Login</a>
+            <div>
+                <input class="form-control mb-3" type="text" name="name" placeholder="First Name" {% if first_name %} value="{{ first_name }}" {% endif %}>
+                <input class="form-control mb-3" type="text" name="username" placeholder="Username" {% if username %} value="{{ username }}" {% endif %}>
+                <input class="form-control mb-3" type="email" name="email" placeholder="Email"{% if email %} value="{{ email }}" {% endif %}>
+                <input class="form-control mb-3" type="password" name="password" placeholder="Password">
+                <input class="form-control mb-3" type="password" name="confirm-password" placeholder="Confirm Password">
+            </div>
+
+            <button class="btn btn-primary d-block w-100" type="submit">Sign Up</button>
+
+            <p class="text">OR</p>
+            <p class="text">Already have an account?</p>
+
+            <div class="redirect">
+                <a href="{% url 'login' %}">LOG IN</a>
+            </div>
+        </form>
 {% endblock %}
