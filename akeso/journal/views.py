@@ -6,7 +6,8 @@ from django.urls import reverse
 from .models import Journal, Entry, Activity, Mood, Status, WeeklyUpdate
 from django.contrib.auth.models import User
 from datetime import datetime, date, timedelta
-from .common import currentWeek
+import json
+from .common import currentWeek, weekdays
 
 #TODO: Create a way to view the entries details (Their Context and Header)
 #TODO: Create a custom ID number creator for each model created (besides just counting from 1)
@@ -25,25 +26,12 @@ def index(request):
         if moodStatus:
             moodValid = True
 
-        # Grabs the dates for the current week (Monday to Sunday)
-        week = currentWeek()
-        # Filters through the weeklyUpdate model to see if the user has already created a weekly report
-        weeklyReport = WeeklyUpdate.objects.filter(user_id=user,
-                                                   creation_date__range=[week[0].strftime("%Y-%m-%d"),
-                                                                         week[6].strftime("%Y-%m-%d")])
-        # Checks if there has been a mood report already created or not
-        weeklyValid = False
-        if weeklyReport:
-            weeklyValid = True
-
         activities = Activity.objects.filter(user_id=user)
-        # TODO: Allow users to see their Journals numbered 1, 2, 3,... rather than just the
-        # primary key number auto assigned to the journal on creation.
+
         return render(request, "journal/library.html", {
             "journals": library,
             "activities": activities,
             "daily_mood": moodValid,
-            "weekly_report": weeklyValid
         })
 
 
@@ -136,6 +124,83 @@ def delete_mood(request):
             moodReport.delete()
             return HttpResponseRedirect(reverse("index"))
 
+def view_weekly_update(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        allWeeklyReports = WeeklyUpdate.objects.filter(user_id=user)
+
+        if request.method == "POST":
+            # Grabs the weekly report from the desired week
+            weeklyReportID = request.POST['week']
+            weeklyReport = WeeklyUpdate.objects.get(id=weeklyReportID)
+            weeklyValid = True
+
+            # Grabs the dates for the desired week
+            week = weekdays(weeklyReport.start_date)
+            # Filters through the Mood objects to find everything in range of the dates
+            weeklyMood = Mood.objects.filter(user_id=user,
+                                             creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                   week[6].strftime("%Y-%m-%d")])
+
+            weekDates = []
+            moodScales = []
+            # Iterates through each day in the week and trys to assign a coresponding mood scale for that day
+            for date in week:
+                weekDates.append(date.strftime("%a (%d-%m-%Y)"))
+                try:
+                    moodReport = weeklyMood.get(user_id=user,
+                                                creation_date=date.strftime("%Y-%m-%d"))
+                    moodScales.append(moodReport.mood_scale)
+                except Mood.DoesNotExist:
+                    moodScales.append(None)
+        else:
+            # Grabs the dates for the current week (Monday to Sunday)
+            week = currentWeek()
+            # Filters through the weeklyUpdate model and weeklyMood
+            weeklyMood = Mood.objects.filter(user_id=user,
+                                                       creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                             week[6].strftime("%Y-%m-%d")])
+            weeklyReport = WeeklyUpdate.objects.filter(user_id=user,
+                                             creation_date__range=[week[0].strftime("%Y-%m-%d"),
+                                                                   week[6].strftime("%Y-%m-%d")])
+            # Checks if there is an existing weeklyReport created for the current week
+            weeklyValid = False
+            if weeklyReport:
+                weeklyValid = True
+
+                weekDates = []
+                moodScales = []
+                # Iterates through each day in the week and trys to assign a coresponding mood scale for that day
+                for date in week:
+                    weekDates.append(date.strftime("%a (%d-%m-%Y)"))
+                    try:
+                        moodReport = weeklyMood.get(user_id=user,
+                                                        creation_date=date.strftime("%Y-%m-%d"))
+                        moodScales.append(moodReport.mood_scale)
+                    except Mood.DoesNotExist:
+                        moodScales.append(None)
+
+            if weeklyValid:
+                # Grabs the dates to make the title of the graph
+                monday = week[0].strftime('%d-%m-%Y')
+                sunday = week[6].strftime('%d-%m-%Y')
+                title = f"Weekly Report ({monday} - {sunday})"
+
+                return render(request, "journal/weekly-report.html", {
+                    "weekly_report": weeklyValid,
+                    "weeks": allWeeklyReports,
+                    "labels": weekDates,
+                    "data": json.dumps(moodScales),
+                    "graph_title": title
+                })
+            else:
+                return render(request, "journal/weekly-report.html", {
+                    "weekly_report": weeklyValid,
+                    "weeks": allWeeklyReports
+                })
+
 # TODO: Code here runs slow, should figure a way to optimize it
 def create_weekly_update(request):
     if not request.user.is_authenticated:
@@ -179,6 +244,8 @@ def create_weekly_update(request):
             ordered_status = weekMoods.order_by('-mood_scale')
             bestDayStatus = Status.objects.get(user_id=user, mood_id=ordered_status[0])
             weeklyUpdate.best_day.add(bestDayStatus)
+            weeklyUpdate.start_week = week[0].strftime("20%y-%m-%d")
+            weeklyUpdate.end_week = week[6].strftime("20%y-%m-%d")
             temp_mood = 0
             for i in ordered_status:
                 temp_mood += i.mood_scale
@@ -233,10 +300,10 @@ def create_weekly_update(request):
 
             weeklyUpdate.save()
 
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("viewWeeklyReport"))
 
         else:
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("viewWeeklyReport"))
 
 def delete_weekly_update(request):
     if not request.user.is_authenticated:
@@ -258,7 +325,7 @@ def delete_weekly_update(request):
         weekReport.delete()
         weekStatus.delete()
 
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("viewWeeklyReport"))
 
 def view_activity(request):
     if not request.user.is_authenticated:
