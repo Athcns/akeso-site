@@ -73,6 +73,9 @@ class Status(models.Model):
 
 class WeeklyUpdate(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_week = models.DateField(null=True)
+    end_week = models.DateField(null=True)
+
     # Links to the status models created for that week
     status_id = models.ManyToManyField(Status, related_name="status_id")
     creation_date = models.DateField(auto_now_add=True)
