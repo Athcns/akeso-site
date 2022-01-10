@@ -10,3 +10,13 @@ def currentWeek():
 
     return week
 
+def weekdays(selectedDate):
+    # It will be the first day in a week
+    startDay = selectedDate
+    # Therefore the startweekDay is 0 being Monday, 6 being Sunday
+    startWeekday = 0
+    week = []
+    for i in range(7):
+        week.append(startDay + timedelta(days=i))
+
+    return week
