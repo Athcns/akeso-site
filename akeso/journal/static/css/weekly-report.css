@@ -1,0 +1,36 @@
+.weekly-report {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.weekly-report h1 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.status p {
+  font-size: 15px;
+  opacity: 0.75;
+  margin-bottom: 3px;
+}
+
+.status button {
+  margin-bottom: 10px;
+}
+
+.line-chart {
+  height: 70vh;
+  width: auto
+}
+
+.selection {
+  display: flex;
+  margin-left: 5vh;
+  margin-right: 5vh;
+  margin-top: 20px;
+}
+
+.selection button {
+  margin-left: 10px;
+}
+
