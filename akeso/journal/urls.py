@@ -9,6 +9,7 @@ urlpatterns = [
     path("activities", views.view_activity, name="viewActivity"),
     path("create-activity", views.create_activity, name="createActivity"),
     path("delete-activity/<int:activityID>", views.delete_activity, name="deleteActivity"),
+    path("weekly-report", views.view_weekly_update, name="viewWeeklyReport"),
     path("create-weekly-report", views.create_weekly_update, name="createWeeklyReport"),
     path("delete-weekly-report", views.delete_weekly_update, name="deleteWeeklyReport"),
     path("<int:journalID>/create", views.create_entry, name="createEntry"),
