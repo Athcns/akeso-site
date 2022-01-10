@@ -1,0 +1,113 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+    <section>
+        <div class="weekly-report">
+            <h1>Weekly Report</h1>
+
+            {% if not weekly_report %}
+            <div class="status">
+                <p>You haven't made a weekly report yet! Would you like to make one?</p>
+                <a class="btn btn-primary" type="button" href="{% url 'createWeeklyReport' %}">Make Weekly Report</a>
+            </div>
+            {% else %}
+            <div class="status">
+                <p>You've already made a weekly report. Would you like to delete this one?</p>
+                <a class="btn btn-primary" type="button" href="{% url 'deleteWeeklyReport' %}">Delete Weekly Report</a>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div>
+            <form method="get" class="selection">
+                <select name="week" class="form-select">
+                    <option selected>View other week reports</option>
+                    {% for week in weeks %}
+                        <option value="{{ week.id }}}">{{ week.start_week }} - {{ week.end_week}}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-primary" type="submit">
+                    View
+                </button>
+            </form>
+        </div>
+
+        <div class="line-chart">
+            <canvas id="weekMoodChart"></canvas>
+        </div>
+    </section>
+
+    <script>
+        const weeklyMood = {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Mood Scales',
+                backgroundColor: 'rgb(20, 133, 238)',
+                borderColor: 'rgb(20, 133, 238)',
+                borderWidth: 5,
+                data: {{ data|safe }},
+                tension: 0.1
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: weeklyMood,
+            options: {
+                maintainAspectRatio: false,
+                response: true,
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 50,
+                        bottom: 20
+                    }
+                },
+                spanGaps: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "{{ graph_title }}",
+                        font: {
+                            size: 25
+                        },
+                        color: 'rgb(20, 133, 238)'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10,
+                        ticks: {
+                            font: {
+                                size: 15,
+                                style: "italic"
+                            },
+                            color: 'rgb(20, 133, 238)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            },
+                            color: 'rgb(20, 133, 238)',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <script>
+      const weekMoodChart = new Chart(
+        document.getElementById('weekMoodChart'),
+        config
+      );
+    </script>
+{% endblock %}
