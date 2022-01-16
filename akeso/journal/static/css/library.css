@@ -52,7 +52,12 @@
   opacity: 0.5;
 }
 
-.day-report {
+.journal-tab {
+  display: flex;
+}
+
+.journal-tab a {
+  margin-left: 10px;
 }
 
 .journal-name:hover {

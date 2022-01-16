@@ -3,7 +3,7 @@
 {% block body %}
     <section>
         <div class="library-head">
-            <h2>Welcome, {{ request.user.username }}!</h2>
+            <h2>Welcome, {{ request.user.first_name }}!</h2>
             <p>I hope your day has been going well, are you here to write an entry or day report?</p>
 
         {% if not daily_mood %}
@@ -30,7 +30,8 @@
                             <form method="post" action="{% url 'mood' %}">
                                 {% csrf_token %}
                                 <div class="modal-body">
-                                        <p>How are your feeling today?</p><input class="form-control" type="number" name="mood_scale" placeholder="1-10" max="10" min="1" value="5">
+                                        <p>How are your feeling today?</p>
+                                        <input class="form-control" type="number" name="mood_scale" placeholder="1-10" max="10" min="1" value="5">
                                         <p>What activities did you do today?</p>
 
                                         {% if activities %}
@@ -79,9 +80,10 @@
                             <a class="journal-name" href="{% url 'viewJournal' journalID=journal.id %}">
                                 {{ journal.name }}
                             </a>
-                            <p class="journal-access">
-                                Accessed Date
-                            </p>
+                            <div class="journal-tab">
+                                <p class="journal-access">Accessed Date</p>
+                                <a class="btn btn-primary" type="button" href="{% url 'deleteJournal' journalID=journal.id %}">Delete</a>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
