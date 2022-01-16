@@ -43,10 +43,13 @@ def register(request):
             if not Account.objects.filter(username=username).exists():
                 if not Account.objects.filter(email=email).exists():
                     if password == confirm_password:
-                        user = Account.objects.create_user(first_name=first_name, username=username, email=email, password=password)
-                        return render(request, "users/login.html", {
-                            "message": "Account Created."
-                        })
+                        if len(password) >= 5:
+                            user = Account.objects.create_user(first_name=first_name, username=username, email=email, password=password)
+                            return render(request, "users/login.html", {
+                                "message": "Account Created."
+                            })
+                        else:
+                            error_message = "Password must be 5 characters or longer"
                     else:
                         error_message = "Passwords do not match"
                 else:
@@ -63,5 +66,68 @@ def register(request):
             "email": email,
         })
 
-
     return render(request, "users/register.html")
+
+def change_password(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = Account.objects.get(id=request.user.id)
+        if request.method == "POST":
+            currentPassword = request.POST['currentPassword']
+            newPassword = request.POST['newPassword']
+            confirmPassword = request.POST['confirmPassword']
+
+            validatePassword = authenticate(request, username = user.username, password = currentPassword)
+
+            if validatePassword is not None:
+                if newPassword == confirmPassword:
+                    if len(newPassword) >= 5:
+                        user.set_password(newPassword)
+                        user.save()
+
+                        logout(request)
+                        return render(request, "users/index.html", {
+                            "message": "Logged Out"
+                        })
+                    else:
+                        error_message = "Password must be 5 characters or longer"
+                else:
+                    error_message = "Passwords are not matching"
+            else:
+                error_message = "Current Password wrong!"
+
+            return render(request, "journal/settings.html", {
+                "user": user,
+                "error_message": error_message
+            })
+        return render(request, "journal/settings.html", {
+            "user": user,
+        })
+
+def change_name(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = Account.objects.get(id=request.user.id)
+        if request.method == "POST":
+            newFirstName = request.POST['newFirstName']
+
+            if len(newFirstName) >= 1:
+                user.first_name = newFirstName
+                user.save()
+
+                return render(request, "journal/settings.html", {
+                    "user": user
+                })
+            else:
+                error_message = "First Name must be atleast 1 character"
+
+            return render(request, "journal/settings.html", {
+                "user": user,
+                "error_message": error_message
+            })
+
+        return render(request, "journal/settings.html", {
+            "user": user
+        })
