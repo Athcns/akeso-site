@@ -13,7 +13,7 @@ class Journal(models.Model):
 
 class Entry(models.Model):
     # Accesses the entries with the same journal primary keys
-    journal_id = models.ManyToManyField(Journal)
+    journal_id = models.ForeignKey(Journal, on_delete=models.CASCADE)
     # Creation date is set using datetime.datetime in views.py
     creation_date = models.DateTimeField(auto_now_add=True)
     # Auto sets date for when the model is opened
