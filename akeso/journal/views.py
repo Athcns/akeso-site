@@ -9,9 +9,6 @@ from datetime import datetime, date, timedelta
 import json
 from .common import currentWeek, weekdays
 
-#TODO: Create a way to view the entries details (Their Context and Header)
-#TODO: Create a custom ID number creator for each model created (besides just counting from 1)
-
 # Create your views here.
 def index(request):
     if not request.user.is_authenticated:
@@ -165,8 +162,6 @@ def delete_journal(request, journalID):
             return HttpResponseRedirect(reverse("index"))
 
 # Allows users to create mood reports for their day
-# TODO: Allow people to recreate a mood report for the day (Eg. accidently submited)
-# TODO: Compile all the moods in the week and give a weekly update/suggestions
 def create_mood(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
@@ -308,7 +303,6 @@ def view_weekly_update(request):
                     "weeks": allWeeklyReports
                 })
 
-# TODO: Code here runs slow, should figure a way to optimize it
 def create_weekly_update(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
