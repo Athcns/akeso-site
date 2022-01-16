@@ -5,26 +5,29 @@
         <div class="weekly-report">
             <h1>Weekly Report</h1>
 
-            {% if not weekly_report %}
-            <div class="status">
-                <p>You haven't made a weekly report yet! Would you like to make one?</p>
-                <a class="btn btn-primary" type="button" href="{% url 'createWeeklyReport' %}">Make Weekly Report</a>
-            </div>
-            {% else %}
-            <div class="status">
-                <p>You've already made a weekly report. Would you like to delete this one?</p>
-                <a class="btn btn-primary" type="button" href="{% url 'deleteWeeklyReport' %}">Delete Weekly Report</a>
-            </div>
+            {% if currentWeek %}
+                {% if not weekly_report %}
+                <div class="status">
+                    <p>You haven't made a weekly report yet! Would you like to make one?</p>
+                    <a class="btn btn-primary" type="button" href="{% url 'createWeeklyReport' %}">Make Weekly Report</a>
+                </div>
+                {% else %}
+                <div class="status">
+                    <p>You've already made a weekly report. Would you like to delete this one?</p>
+                    <a class="btn btn-primary" type="button" href="{% url 'deleteWeeklyReport' %}">Delete Weekly Report</a>
+                </div>
+                {% endif %}
             {% endif %}
 
         </div>
 
         <div>
-            <form method="get" class="selection">
+            <form method="post" class="selection">
+                {% csrf_token %}
                 <select name="week" class="form-select">
                     <option selected>View other week reports</option>
                     {% for week in weeks %}
-                        <option value="{{ week.id }}}">{{ week.start_week }} - {{ week.end_week}}</option>
+                        <option value="{{ week.id }}">{{ week.start_week }} - {{ week.end_week}}</option>
                     {% endfor %}
                 </select>
 
@@ -34,9 +37,34 @@
             </form>
         </div>
 
-        <div class="line-chart">
-            <canvas id="weekMoodChart"></canvas>
-        </div>
+        {% if weekly_report %}
+            <div class="line-chart">
+                <canvas id="weekMoodChart"></canvas>
+            </div>
+            <section class="weekly-stats">
+                <h1>For this week</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Activities Related</h3>
+                            {% for suggested_activity in suggested_activities %}
+                                <p>You seemed to have a better mood when you did {{ suggested_activity.name }}!</p>
+                            {% endfor %}
+                            <p>You did {{ often_activity.name }} a total of {{ often_value }} times this week, it was your highest occurring activity according to your day reports.</p>
+                        </div>
+                        <div class="col">
+                            <h3>Day Related</h3>
+                            {% for best_day in best_days %}
+                                <p>It looks like your best day was {{ best_day.day_name }}!</p>
+                            {% endfor %}
+                            <p>According to your day reports this week, you had an average rating of {{ average_value }} on how you felt through this week.</p>
+                            <p>You did a day report a total of {{ num_of_reports }} times this week.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
     </section>
 
     <script>

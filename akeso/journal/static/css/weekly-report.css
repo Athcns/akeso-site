@@ -34,3 +34,25 @@
   margin-left: 10px;
 }
 
+.weekly-stats {
+  margin-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.weekly-stats h1 {
+  font-size: 23px;
+  font-weight: 600;
+}
+
+.weekly-stats p {
+  margin-top: 2px;
+  margin-bottom: 5px;
+  font-size: 17px;
+}
+
+.weekly-stats h3 {
+  font-size: 19px;
+  opacity: 0.75;
+}
+
