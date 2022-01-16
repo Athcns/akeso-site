@@ -54,9 +54,10 @@ def create_entry(request, journalID):
         if request.method == "POST":
             header = request.POST['header']
             content = request.POST['content']
+            currentTime = datetime.now()
 
             # Creates a new entry model and saves it
-            newEntry = Entry(header=header, content=content, journal_id=journal)
+            newEntry = Entry(header=header, content=content, journal_id=journal, accessed_date=currentTime)
             newEntry.save()
 
             entries = Entry.objects.filter(journal_id=journalID)
@@ -77,6 +78,13 @@ def view_entry(request, entryID, journalID):
         try:
             journal = Journal.objects.get(id=journalID, writer=user)
             entry = Entry.objects.get(id=entryID, journal_id__writer=user, journal_id=journal)
+
+            # Updating the accessed date/time once the entry opens
+            entry.accessed_date = datetime.now()
+            entry.save()
+            journal.accessed_date = datetime.now()
+            journal.save()
+
             return render(request, "journal/entry.html", {
                 "entry": entry,
                 "journal": journal
@@ -113,8 +121,9 @@ def create_journal(request):
         if request.method == "POST":
             name = request.POST['journalName']
             user = User.objects.get(id=request.user.id)
+            currentTime = datetime.now()
 
-            newJournal = Journal(writer=user, name=name)
+            newJournal = Journal(writer=user, name=name, accessed_date=currentTime)
             newJournal.save()
 
             return HttpResponseRedirect(reverse("index"))
@@ -130,9 +139,8 @@ def view_journal(request, journalID):
         try:
             journal = Journal.objects.get(id=journalID, writer=user)
             entries = Entry.objects.filter(journal_id=journalID)
-            currentDate = date.today().strftime("%Y-%m-%d")
 
-            journal.accessed_date = currentDate
+            journal.accessed_date = datetime.now()
             journal.save()
 
             return render(request, "journal/journal.html", {

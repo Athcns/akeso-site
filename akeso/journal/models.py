@@ -6,7 +6,7 @@ class Journal(models.Model):
     # Assigns each account user's primary key to a journal table
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
-    accessed_date = models.DateField()
+    accessed_date = models.DateTimeField()
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Entry(models.Model):
     # Creation date is set using datetime.datetime in views.py
     creation_date = models.DateTimeField(auto_now_add=True)
     # Auto sets date for when the model is opened
-    accessed_date = models.DateTimeField(auto_now=True)
+    accessed_date = models.DateTimeField()
     # Header for the journal | max 100 chars
     header = models.CharField(max_length=100)
     # Entry Details
