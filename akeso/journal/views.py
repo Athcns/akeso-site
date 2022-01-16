@@ -34,6 +34,16 @@ def index(request):
             "daily_mood": moodValid,
         })
 
+def settings(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+
+        return render(request, "journal/settings.html", {
+            "user": user
+        })
+
 
 def create_entry(request, journalID):
     if not request.user.is_authenticated:
@@ -46,9 +56,8 @@ def create_entry(request, journalID):
             content = request.POST['content']
 
             # Creates a new entry model and saves it
-            newEntry = Entry(header=header, content=content)
+            newEntry = Entry(header=header, content=content, journal_id=journal)
             newEntry.save()
-            newEntry.journal_id.add(journal)
 
             entries = Entry.objects.filter(journal_id=journalID)
             return render(request, "journal/journal.html", {
@@ -60,6 +69,42 @@ def create_entry(request, journalID):
             "journal": journal
         })
 
+def view_entry(request, entryID, journalID):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        try:
+            journal = Journal.objects.get(id=journalID, writer=user)
+            entry = Entry.objects.get(id=entryID, journal_id__writer=user, journal_id=journal)
+            return render(request, "journal/entry.html", {
+                "entry": entry,
+                "journal": journal
+            })
+        except Journal.DoesNotExist:
+            return HttpResponseRedirect(reverse("index"))
+        except Entry.DoesNotExist:
+            return HttpResponseRedirect(reverse("index"))
+
+def delete_entry(request, entryID, journalID):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        try:
+            # Prevents users from deleting other documents or other people's entries
+            entry = Entry.objects.get(id=entryID, journal_id=journalID, journal_id__writer=user)
+            entry.delete()
+
+            entries = Entry.objects.filter(journal_id=journalID)
+            journal = Journal.objects.get(id=journalID)
+
+            return render(request, "journal/journal.html", {
+                "journal": journal,
+                "entries": entries
+            })
+        except Entry.DoesNotExist:
+            return HttpResponseRedirect(reverse("index"))
 
 def create_journal(request):
     if not request.user.is_authenticated:
@@ -80,13 +125,32 @@ def view_journal(request, journalID):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
-        journal = Journal.objects.get(id=journalID)
-        entries = Entry.objects.filter(journal_id=journalID)
+        user = User.objects.get(id=request.user.id)
+        # Prevents other uses from accessing the journals
+        try:
+            journal = Journal.objects.get(id=journalID, writer=user)
+            entries = Entry.objects.filter(journal_id=journalID)
 
-        return render(request, "journal/journal.html", {
-            "journal": journal,
-            "entries": entries
-        })
+            return render(request, "journal/journal.html", {
+                "journal": journal,
+                "entries": entries
+            })
+        except Journal.DoesNotExist:
+            return HttpResponseRedirect(reverse("index"))
+
+def delete_journal(request, journalID):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        user = User.objects.get(id=request.user.id)
+        try:
+            # Prevents users from deleting other documents or other people's entries
+            journal = Journal.objects.get(id=journalID, writer=user)
+            journal.delete()
+
+            return HttpResponseRedirect(reverse("index"))
+        except Journal.DoesNotExist:
+            return HttpResponseRedirect(reverse("index"))
 
 # Allows users to create mood reports for their day
 # TODO: Allow people to recreate a mood report for the day (Eg. accidently submited)
@@ -129,7 +193,7 @@ def view_weekly_update(request):
         return HttpResponseRedirect(reverse("login"))
     else:
         user = User.objects.get(id=request.user.id)
-        allWeeklyReports = WeeklyUpdate.objects.filter(user_id=user)
+        allWeeklyReports = WeeklyUpdate.objects.filter(user_id=user).order_by("-creation_date")
 
         if request.method == "POST":
             # Grabs the weekly report from the desired week
@@ -137,8 +201,11 @@ def view_weekly_update(request):
             weeklyReport = WeeklyUpdate.objects.get(id=weeklyReportID)
             weeklyValid = True
 
-            # Grabs the dates for the desired week
-            week = weekdays(weeklyReport.start_date)
+            # Grabs the dates for the desired week and checks whether the week is the current one or not
+            week = weekdays(weeklyReport.start_week)
+            currentBool = False
+            if week == currentWeek():
+                currentBool = True
             # Filters through the Mood objects to find everything in range of the dates
             weeklyMood = Mood.objects.filter(user_id=user,
                                              creation_date__range=[week[0].strftime("%Y-%m-%d"),
@@ -155,6 +222,26 @@ def view_weekly_update(request):
                     moodScales.append(moodReport.mood_scale)
                 except Mood.DoesNotExist:
                     moodScales.append(None)
+
+            monday = week[0].strftime('%d-%m-%Y')
+            sunday = week[6].strftime('%d-%m-%Y')
+            title = f"Weekly Report ({monday} - {sunday})"
+
+            return render(request, "journal/weekly-report.html", {
+                "weekly_report": weeklyValid,
+                "currentWeek": currentBool,
+                "best_day": weeklyReport.best_day,
+                "average_value": weeklyReport.average_value,
+                "num_of_reports": weeklyReport.num_of_moods,
+                "often_activity": weeklyReport.often_activity,
+                "often_value": weeklyReport.often_value,
+                "suggested_activity": weeklyReport.suggested_activity,
+                "weeks": allWeeklyReports,
+                "labels": weekDates,
+                "data": json.dumps(moodScales),
+                "graph_title": title
+            })
+
         else:
             # Grabs the dates for the current week (Monday to Sunday)
             week = currentWeek()
@@ -190,6 +277,13 @@ def view_weekly_update(request):
 
                 return render(request, "journal/weekly-report.html", {
                     "weekly_report": weeklyValid,
+                    "currentWeek": True,
+                    "best_days": Status.objects.filter(best_day__id=weeklyReport[0].id),
+                    "average_value": weeklyReport[0].average_value,
+                    "num_of_reports": weeklyReport[0].num_of_moods,
+                    "often_activity": weeklyReport[0].often_activity,
+                    "often_value": weeklyReport[0].often_value,
+                    "suggested_activities": Activity.objects.filter(weeklyupdate__id=weeklyReport[0].id),
                     "weeks": allWeeklyReports,
                     "labels": weekDates,
                     "data": json.dumps(moodScales),
@@ -198,6 +292,7 @@ def view_weekly_update(request):
             else:
                 return render(request, "journal/weekly-report.html", {
                     "weekly_report": weeklyValid,
+                    "currentWeek": True,
                     "weeks": allWeeklyReports
                 })
 
@@ -368,15 +463,4 @@ def delete_activity(request, activityID):
         return render(request, "journal/activity.html", {
             "activities": activities,
             "message": f"{activity_name} has been deleted"
-        })
-
-def view_entry(request, entryID,journalID):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    else:
-        entry = Entry.objects.get(id=entryID)
-        journal = Journal.objects.get(id=journalID)
-        return render(request, "journal/entry.html", {
-            "entry": entry,
-            "journal": journal
         })
