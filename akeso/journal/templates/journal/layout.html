@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/journal.css' %}">
     <link rel="stylesheet" href="{% static 'css/activity.css' %}">
     <link rel="stylesheet" href="{% static 'css/weekly-report.css' %}">
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
@@ -26,7 +27,7 @@
             <div class="brands"></div>
             <div class="logo" style="font-size: 20px;">
                 <i class="fas fa-brain"></i>
-                <a class="navbar-brand" href="#">Akeso</a>
+                <a class="navbar-brand" href="{% url 'index' %}">Akeso</a>
             </div>
             <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
                 <span class="visually-hidden">Toggle navigation</span>
@@ -45,7 +46,7 @@
                     </li>
                 </ul>
                 <span class="navbar-text actions">
-                    <a class="navlink" href="#">Settings</a>
+                    <a class="navlink" href="{% url 'settings' %}">Settings</a>
                     <a class="navlink" href="{% url 'logout' %}">Log Out</a>
                 </span>
             </div>
