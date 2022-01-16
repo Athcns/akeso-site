@@ -1,0 +1,131 @@
+{% extends 'journal/layout.html' %}
+
+{% block body %}
+    {% if error_message %}
+    <div class="alert alert-warning settings-alert" role="alert">
+        <span>
+            <strong>{{ error_message }}</strong>
+        </span>
+    </div>
+    {% endif %}
+
+    <div class="settings-section">
+        <h1>Account Information</h1>
+        <p class="description">Basic information related to your account.</p>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col settings-row">
+                        <div></div>
+                        <p class="static-text">First Name:</p>
+                        <p class="variable-text">{{ user.first_name }}</p>
+
+
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#changeFirstName">
+                            Change First Name
+                        </button>
+
+                        <div id="changeFirstName" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="userChangeFirstName" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header"  id="userChangeFirstName">
+                                        <h4 class="modal-title">Change First Name</h4>
+                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form method="post" action="{% url 'changeName' %}">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <p>Change your first name below</p>
+                                            <input class="form-control" type="text" placeholder="First Name" name="newFirstName"/>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button class="btn btn-light" type="button" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+
+                                            <button class="btn btn-primary" type="submit">
+                                                Save Changes
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col settings-row">
+                        <p class="static-text">Username:</p>
+                        <p class="variable-text">{{ user.username }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col settings-row">
+                        <p class="static-text">Email:</p>
+                        <p class="variable-text">{{ user.email}}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="settings-section">
+        <h3>Security</h3>
+        <p class="description">In order to change your password, click the button below</p>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col settings-row">
+                        <p class="static-text">Password:</p>
+
+                        <div>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#changePassword">
+                                Change Password
+                            </button>
+
+                            <div id="changePassword" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="userChangePassword" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title"  id="userChangePassword">
+                                                Changing Password
+                                            </h4>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'changeCurrentPassword' %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <p>In order to change your password, please input the current password and new password below.</p>
+                                                <input class="form-control" type="password" placeholder="Current Password" name="currentPassword"/>
+                                                <p>Requirements</p>
+                                                <ul>
+                                                    <li>5 characters or longer</li>
+                                                    <li>Alphabets, numbers, and symbols only</li>
+                                                </ul>
+                                                <input class="form-control" type="password" placeholder="New Password" name="newPassword"/>
+                                                <input class="form-control" type="password" placeholder="Confirm Password" name="confirmPassword"/>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button class="btn btn-light" type="button" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+
+                                                <button class="btn btn-primary" type="submit">
+                                                    Change Password
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

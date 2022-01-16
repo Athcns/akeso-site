@@ -1,0 +1,60 @@
+.settings-row {
+  display: inline-flex;
+  justify-content: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.static-text {
+  padding-right: 30px;
+  padding-top: 10px;
+}
+
+.settings-row button {
+  font-size: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.variable-text {
+  padding-top: 10px;
+}
+
+.modal-body p {
+  font-size: 15px;
+  opacity: 0.9;
+  padding-top: 5px;
+  margin-bottom: 3px;
+}
+
+.modal-body ul {
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.modal-body input {
+  margin-top: 8px;
+}
+
+.settings-section h1 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.settings-section h3 {
+  text-align: center;
+  padding-top: 5px;
+}
+
+.description {
+  text-align: center;
+  font-size: 17px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.settings-alert {
+  text-align: center;
+}
+
