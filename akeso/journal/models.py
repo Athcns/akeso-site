@@ -6,6 +6,7 @@ class Journal(models.Model):
     # Assigns each account user's primary key to a journal table
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
+    accessed_date = models.DateField()
     name = models.CharField(max_length=50)
 
     def __str__(self):

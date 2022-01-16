@@ -130,6 +130,10 @@ def view_journal(request, journalID):
         try:
             journal = Journal.objects.get(id=journalID, writer=user)
             entries = Entry.objects.filter(journal_id=journalID)
+            currentDate = date.today().strftime("%Y-%m-%d")
+
+            journal.accessed_date = currentDate
+            journal.save()
 
             return render(request, "journal/journal.html", {
                 "journal": journal,

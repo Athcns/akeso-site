@@ -81,7 +81,7 @@
                                 {{ journal.name }}
                             </a>
                             <div class="journal-tab">
-                                <p class="journal-access">Accessed Date</p>
+                                <p class="journal-access">{{ journal.accessed_date }}</p>
                                 <a class="btn btn-primary" type="button" href="{% url 'deleteJournal' journalID=journal.id %}">Delete</a>
                             </div>
                         </div>
