@@ -29,9 +29,6 @@
   text-align: center;
 }
 
-.entry-row {
-}
-
 .journal-entries p {
   display: inline-flex;
   text-align: right;
@@ -67,4 +64,9 @@
   margin-right: 10px;
   font-size: 15px;
 }
+
+.container button {
+  margin-left: 10px;
+}
+
 

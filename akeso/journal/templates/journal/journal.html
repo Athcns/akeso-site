@@ -20,7 +20,10 @@
                             <a href="{% url 'readEntry' entryID=entry.id journalID=journal.id %}">
                                 {{ entry.header }}
                             </a>
-                            <p>{{ entry.accessed_date }}</p>
+                            <div>
+                                <p>{{ entry.accessed_date }}</p>
+                                <a class="btn btn-primary" type="button" href="{% url 'deleteEntry' entryID=entry.id journalID=journal.id %}">Delete</a>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
