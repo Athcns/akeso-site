@@ -16,7 +16,7 @@ def index(request):
     else:
         user = User.objects.get(id=request.user.id)
         currentDate = str(date.today())
-        library = Journal.objects.filter(writer=user)
+        library = Journal.objects.filter(writer=user).order_by("-creation_date")
         moodStatus = Mood.objects.filter(user_id=user, creation_date=currentDate)
         # Check if there is an existing Mood Status for the day
         moodValid = False
@@ -57,7 +57,7 @@ def create_entry(request, journalID):
             newEntry = Entry(header=header, content=content, journal_id=journal, accessed_date=currentTime)
             newEntry.save()
 
-            entries = Entry.objects.filter(journal_id=journalID)
+            entries = Entry.objects.filter(journal_id=journalID).order_by("-creation_date")
             return render(request, "journal/journal.html", {
                 "journal":journal,
                 "entries":entries
@@ -101,7 +101,7 @@ def delete_entry(request, entryID, journalID):
             entry = Entry.objects.get(id=entryID, journal_id=journalID, journal_id__writer=user)
             entry.delete()
 
-            entries = Entry.objects.filter(journal_id=journalID)
+            entries = Entry.objects.filter(journal_id=journalID).order_by("-creation_date")
             journal = Journal.objects.get(id=journalID)
 
             return render(request, "journal/journal.html", {
@@ -135,7 +135,7 @@ def view_journal(request, journalID):
         # Prevents other uses from accessing the journals
         try:
             journal = Journal.objects.get(id=journalID, writer=user)
-            entries = Entry.objects.filter(journal_id=journalID)
+            entries = Entry.objects.filter(journal_id=journalID).order_by("-creation_date")
 
             journal.accessed_date = datetime.now()
             journal.save()
