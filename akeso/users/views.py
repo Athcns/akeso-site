@@ -3,6 +3,13 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User as Account
+from django.core.mail import send_mail, BadHeaderError
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+import random, string
+from .models import UserToken
+
 
 # Create your views here.
 def index(request):
@@ -68,6 +75,84 @@ def register(request):
 
     return render(request, "users/register.html")
 
+def request_change(request):
+    if request.method == "POST":
+        enteredEmail = request.POST['email']
+        try:
+            validAccount = Account.objects.get(email=enteredEmail)
+
+            # TODO: Create a way to make sure unique ID's arent repeated
+            uniqueToken, created = UserToken.objects.get_or_create(user=validAccount)
+            uniqueToken.token = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(50))
+            uniqueToken.save()
+
+            subject = "Akeso Password Reset Requested"
+            #email_template = "users/password_reset_email.html"
+            email_template = "users/password_reset_email.txt"
+            email_info = {
+                "email": enteredEmail,
+                "site_name": "Akeso",
+                "userToken": uniqueToken.token,
+                "protocol": "http",
+                "domain": "127.0.0.1:8000",
+                "user": validAccount,
+            }
+            #html_email = render_to_string(email_template, email_info)
+            #plain_email = strip_tags(html_email)
+
+            plain_email = render_to_string(email_template, email_info)
+            try:
+                send_mail(subject, plain_email, "akesohelp@gmail.com", [enteredEmail], fail_silently=False)
+            except BadHeaderError:
+                return render(request, "users/request-email.html", {
+                    "error_message": "Invalid Header Error"
+                })
+
+            return render(request, "users/request-email.html", {
+                "valid_email": True
+            })
+
+
+        except Account.DoesNotExist:
+            return render(request, "users/request-email.html", {
+                "invalid_email": True
+            })
+
+    return render(request, "users/request-email.html")
+
+# Changing password when the user forgot theirs
+def change_unknown_pasword(request, token):
+    user = Account.objects.get(usertoken__token = token)
+
+    if request.method == "POST":
+        newPassword = request.POST['newPassword']
+        confirmPassword = request.POST['confirmPassword']
+
+        if newPassword == confirmPassword:
+            if len(newPassword) >= 5:
+                user.set_password(newPassword)
+                user.save()
+
+                return render(request, "users/login.html", {
+                    "alert_success": "Password changed! Please log in again."
+                })
+            else:
+                error_message = "Password must be 5 characters or longer"
+        else:
+            error_message = "Passwords are not matching"
+
+        return render(request, "users/password-reset.html", {
+            "user": user,
+            "token": token,
+            "alert_error": error_message
+        })
+
+    return render(request, "users/password-reset.html", {
+        "user": user,
+        "token": token
+    })
+
+# Changing password when the user is logged in
 def change_password(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))

@@ -1,6 +1,14 @@
 {% extends 'users/layout.html' %}
 
 {% block body %}
+    {% if alert_success %}
+        <div class="alert alert-success alert-center" role="alert">
+                <span>
+                    <strong>{{ alert_success }}</strong>
+                </span>
+        </div>
+    {% endif %}
+
     <section class="login">
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
@@ -15,7 +23,9 @@
                 <input class="form-control mb-3" type="password" name="password" placeholder="Password">
             </div>
 
-            <a class="forgot" href="#">Forgot your email or password?</a>
+            <a class="forgot" href="{% url 'requestPasswordChange' %}">
+                Forgot your email or password?
+            </a>
 
             <div class="mb-3">
                 <button class="btn btn-primary d-block w-100" type="submit">Log In</button>

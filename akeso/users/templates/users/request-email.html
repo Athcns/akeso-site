@@ -1,0 +1,44 @@
+{% extends 'users/layout.html' %}
+
+{% block body %}
+    {% if valid_email %}
+        <div class="alert alert-success alert-center" role="alert">
+            <span>
+                <strong>Email sent! Please check your email including spam.</strong>
+            </span>
+        </div>
+    {% elif invalid_email %}
+        <div class="alert alert-danger alert-center" role="alert">
+            <span>
+                <strong>An account with this email does not exist!</strong>
+            </span>
+        </div>
+    {% elif error_message %}
+        <div class="alert alert-danger alert-center" role="alert">
+            <span>
+                <strong>{{ error_message }}</strong>
+            </span>
+        </div>
+    {% endif %}
+
+    <section class="login">
+        <form method="post" action="#">
+            {% csrf_token %}
+            <h2 class="visually-hidden">Login Form</h2>
+            <div class="illustration">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1 style="text-align: center;font-size: 23px;font-weight: bold;padding-bottom: 10px;">Password Request</h1>
+            <div>
+                <input class="form-control mb-3" type="email" name="email" placeholder="Email"/>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary d-block w-100" type="submit">
+                    Request a Password Change
+                </button>
+                <div class="mb-3" style="text-align: center;"></div>
+            </div>
+            <div class="signup"></div>
+        </form>
+    </section>
+{% endblock %}
