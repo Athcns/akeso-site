@@ -53,7 +53,7 @@ class Mood(models.Model):
     creation_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user_id} - {self.creation_date}"
+        return f"{self.id} | {self.user_id} - {self.creation_date}"
 
 class Status(models.Model):
     # Connect to user model
