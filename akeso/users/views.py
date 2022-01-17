@@ -93,8 +93,8 @@ def request_change(request):
                 "email": enteredEmail,
                 "site_name": "Akeso",
                 "userToken": uniqueToken.token,
-                "protocol": "http",
-                "domain": "127.0.0.1:8000",
+                "protocol": "https",
+                "domain": "akeso-journal.azurewebsites.net",
                 "user": validAccount,
             }
             #html_email = render_to_string(email_template, email_info)
